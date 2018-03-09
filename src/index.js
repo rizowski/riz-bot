@@ -80,6 +80,9 @@ function createHelp() {
     }
   }
 }
+function isInGuild(message) {
+  return message.guild && message.guild.available;
+}
 
 message
   .filter((message) => message.content.startsWith('!'))
@@ -90,7 +93,7 @@ message
     const [ base, action ] = message.content.split('!').join('').split(' ');
 
     if (base === 'change') {
-      if (action === 'region' && message.guild.available) {
+      if (action === 'region' && isInGuild(message)) {
         const regions = await client.fetchVoiceRegions();
         const america = regions.filterArray((r) => /^US/.test(r.name) && r.id !== message.guild.region);
         const sorted = america.sort((a, b) => b.optimal);
@@ -110,9 +113,8 @@ message
     } else if (base === 'help') {
       await message.channel.send(createHelp());
     }
-  })
-  .catch((e) => {
-    console.error(e);
+
+    return message;
   })
   .subscribe((msg) => {
     console.log(`Responding to ${ msg.author.username }#${ msg.author.discriminator } in #${ msg.channel.name }`);
