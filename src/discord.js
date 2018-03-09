@@ -1,6 +1,6 @@
-'use strict';
 
-const Discord = require("discord.js");
+
+const Discord = require('discord.js');
 const { Observable } = require('rxjs');
 
 const de = require('debug');

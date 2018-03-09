@@ -1,4 +1,4 @@
-const { message, client, error } = require('./discord');
+const { message, client } = require('./discord');
 const { Observable } = require('rxjs');
 
 const people = {
@@ -9,7 +9,7 @@ const people = {
   '65055432095301632': 'aaron'
 };
 
-function createError(reason, region){
+function createError(reason){
   return {
     embed: {
       title: 'Failed to change region',
@@ -78,7 +78,7 @@ function createHelp() {
         }
       ]
     }
-  }
+  };
 }
 function isInGuild(message) {
   return message.guild && message.guild.available;
@@ -87,8 +87,8 @@ function isInGuild(message) {
 message
   .filter((message) => message.content.startsWith('!'))
   .filter((message) => !!people[message.author.id])
-  .throttle(ev => Observable.interval(3000))
-  .flatMap(async (message) => {
+  .throttle(() => Observable.interval(3000))
+  .flatMap(async function(message) {
     console.log(`Handling ${message.content} for ${ message.author.username }#${ message.author.discriminator }`);
     const [ base, action ] = message.content.split('!').join('').split(' ');
 
