@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node .",
     "lint": "esw .",
-    "test": "NODE_ENV=$(NODE_ENV:-test) mocha"
+    "test": ""
   },
   "author": "Colten Rouska",
   "license": "MIT",
