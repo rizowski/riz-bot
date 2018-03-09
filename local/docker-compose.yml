@@ -1,0 +1,9 @@
+version: "3"
+services:
+  riz-bot:
+    build: ../
+    container_name: riz-bot
+    volumes:
+      - ~/configs/riz-bot:/usr/src/app/config
+    environment:
+      DISCORD_TOEKN: ""
