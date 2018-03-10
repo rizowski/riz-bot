@@ -117,7 +117,7 @@ message
         await message.channel.send(createHelp());
       }
     } catch(e) {
-      console.error(e);
+      console.error('Global Handled', e);
       await message.channel.send(createError(`Failed to !${base} ${action}`));
     }
 
@@ -128,5 +128,5 @@ message
     const channel = msg.channel.name && ` in ${ msg.channel.name }`;
     console.log(`Responding to ${ msg.author.username }#${ msg.author.discriminator }${channel || ''}`);
   }, (e) => {
-    console.error(e.message);
+    console.error('Unexpected', e);
   }, () => console.log('done'));
