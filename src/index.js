@@ -9,12 +9,14 @@ const people = {
   '65055432095301632': 'aaron'
 };
 
-function createError(reason){
+function createError(title, reason){
+  const description = reason && `Reason ${reason}`;
+
   return {
     embed: {
-      title: 'Failed to change region',
+      title,
       color: 12124160,
-      description: `Reason: ${reason}`,
+      description,
     }
   };
 }
@@ -92,32 +94,39 @@ message
     console.log(`Handling ${message.content} for ${ message.author.username }#${ message.author.discriminator }`);
     const [ base, action ] = message.content.split('!').join('').split(' ');
 
-    if (base === 'change') {
-      if (action === 'region' && isInGuild(message)) {
-        const regions = await client.fetchVoiceRegions();
-        const america = regions.filterArray((r) => /^US/.test(r.name) && r.id !== message.guild.region);
-        const sorted = america.sort((a, b) => b.optimal);
-        const theChosenOne = sorted[0];
+    try {
+      if (base === 'change') {
+        if (action === 'region' && isInGuild(message)) {
+          const regions = await client.fetchVoiceRegions();
+          const america = regions.filterArray((r) => /^US/.test(r.name) && r.id !== message.guild.region);
+          const sorted = america.sort((a, b) => b.optimal);
+          const theChosenOne = sorted[0];
 
-        await message.channel.send(createPending(client.ping, theChosenOne.name));
+          await message.channel.send(createPending(client.ping, theChosenOne.name));
 
-        try {
-          await message.guild.setRegion(theChosenOne.id);
-        } catch(e) {
-          await message.channel.send(createError(e.message, theChosenOne.name));
-          return;
+          try {
+            await message.guild.setRegion(theChosenOne.id);
+          } catch(e) {
+            await message.channel.send(createError('Failed to change region'));
+            return;
+          }
+
+          await message.channel.send(createSuccess(client.ping, theChosenOne.name));
         }
-
-        await message.channel.send(createSuccess(client.ping, theChosenOne.name));
+      } else if (base === 'help') {
+        await message.channel.send(createHelp());
       }
-    } else if (base === 'help') {
-      await message.channel.send(createHelp());
+    } catch(e) {
+      console.error(e);
+      await message.channel.send(createError(`Failed to !${base} ${action}`));
     }
+
 
     return message;
   })
   .subscribe((msg) => {
-    console.log(`Responding to ${ msg.author.username }#${ msg.author.discriminator } in #${ msg.channel.name }`);
+    const channel = msg.channel.name && ` in ${ msg.channel.name }`;
+    console.log(`Responding to ${ msg.author.username }#${ msg.author.discriminator }${channel || ''}`);
   }, (e) => {
     console.error(e.message);
   }, () => console.log('done'));
