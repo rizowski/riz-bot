@@ -16,13 +16,13 @@ message
   .filter((message) => !!people[message.author.id])
   .throttle(() => Observable.interval(3000))
   .flatMap(async function(message) {
-    const [ base, action ] = message.content.split('!').join('').split(' ');
+    const [ base, action, ...args ] = message.content.split('!').join('').split(' ');
 
     try {
-      commander.do(base, action, client, message);
+      commander.do(base, action, client, message, args);
     } catch(e) {
       const command = [{ name: 'command', value: `!${ base } ${ action || '' }` }];
-      const err = general('Failed to run command', e.message, command);
+      const err = general('Failed to run command', `I suck: ${e.message}`, command);
       await message.channel.send(err);
     }
 

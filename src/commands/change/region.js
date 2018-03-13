@@ -72,7 +72,7 @@ module.exports = async (client, message) => {
   try {
     await message.guild.setRegion(theChosenOne.id);
   } catch(e) {
-    await message.channel.send(createError('Failed to change region'));
+    await message.channel.send(createError('Failed to change region', e.message));
     return;
   }
 

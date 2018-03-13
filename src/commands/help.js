@@ -6,8 +6,12 @@ function createHelp() {
       description: 'Any command needs to be prefixed with !',
       fields: [
         {
+          name: '!add emoji [emojiName]',
+          value: 'Add an emoji to the server. defaults to filename if emojiName is not provided',
+        },
+        {
           name: '!change region',
-          value: 'This will change the region of the server.'
+          value: 'Change the region of the server.'
         },
         {
           name: '!your ping',

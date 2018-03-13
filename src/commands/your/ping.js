@@ -1,4 +1,6 @@
 
 module.exports = async (client, message) => {
-  await message.channel.send(`My ping to this server is ${ client.ping }`);
+  const cleanPing = `${client.ping}`.split('.')[0];
+
+  await message.channel.send(`My ping to this server is ${ cleanPing }`);
 };
