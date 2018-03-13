@@ -15,5 +15,5 @@ module.exports = (milli) => {
   const rand = getRandom(responses.length);
   const response = responses[rand];
 
-  return response(ms(milli));
+  return response(ms(milli, { long: true }));
 };

@@ -6,10 +6,10 @@ function isInGuild(message) {
 
 module.exports = async (client, message, args=[]) => {
   if(!isInGuild(message)) {
-    return message.channel.send(general('Need to be in a guild'));
+    return message.channel.send(general('Try doing that in a server.'));
   }
   if (!message.attachments.size) {
-    return message.channel.send(general('emoji required', 'Please attach an image with the command.'));
+    return message.channel.send(general('emoji required', 'Please attach an image.'));
   }
 
   const attachment = message.attachments.values().next().value;
@@ -24,15 +24,17 @@ module.exports = async (client, message, args=[]) => {
     return message.channel.send(general('emoji malformed', 'Emojis are best suited with equal dimensions', dimensions));
   }
 
-  const emojiName = args[0] || filename.split('.')[0];
+  const [ name ] = args;
+  const emojiName = name || filename.split('.')[0];
   const emojiExists = message.guild.emojis.exists('name', emojiName);
+  const roles = message.mentions.roles.map((role) => role.id);
 
   if (emojiExists) {
     return message.channel.send(general('emoji exists', 'You didn\'t check the emoji list.', [{ name: 'Name', value: emojiName }]));
   }
 
   try {
-    const result = await message.guild.createEmoji(url, emojiName);
+    const result = await message.guild.createEmoji(url, emojiName, roles, `I blame ${ message.author.username }`);
 
     const createEmoji = message.guild.emojis.get(result.id);
     await message.react(createEmoji);

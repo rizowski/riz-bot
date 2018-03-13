@@ -6,7 +6,7 @@ function createHelp() {
       description: 'Any command needs to be prefixed with !',
       fields: [
         {
-          name: '!add emoji [emojiName]',
+          name: '!add emoji [emojiName] [roles...]',
           value: 'Add an emoji to the server. defaults to filename if emojiName is not provided',
         },
         {
