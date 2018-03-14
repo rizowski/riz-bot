@@ -2,6 +2,7 @@ const { merge } = require('rxjs/observable/merge');
 const { message, client } = require('./discord');
 const commander = require('./commands');
 const { general } = require('./utils/error');
+const logger = require('./logger');
 
 const people = {
   'bacon': '108352053692125184',
@@ -43,7 +44,7 @@ merge(
   })
   .subscribe((msg) => {
     const channel = msg.channel.name && ` in ${ msg.channel.name }`;
-    console.log(`Responding to ${ msg.author.username }#${ msg.author.discriminator }${channel || ''}`);
+    logger.log({ message: 'Responding', username: msg.author.username, discriminator: msg.author.discriminator, channel });
   }, (e) => {
-    console.error('Unexpected', e);
-  }, () => console.log('done'));
+    logger.error({ message: 'Unexpected', error: e });
+  }, () => logger.log({ message: 'done' }));

@@ -3,3 +3,4 @@ node_modules
 test
 config/local.*
 local/
+*.log*

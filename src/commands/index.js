@@ -1,3 +1,4 @@
+const logger = require('../logger');
 
 module.exports = {
   do(cmd, subCmd, client, message, args) {
@@ -8,7 +9,7 @@ module.exports = {
       doAction(client, message, args);
     } catch(e) {
       if (e.message.includes('Cannot find module')) {
-        console.warn(e.message);
+        logger.warn({ message: 'Cannot find module', error: e.message });
         return;
       }
 

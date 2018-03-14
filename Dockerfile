@@ -9,4 +9,4 @@ COPY . .
 
 RUN yarn install --prod
 
-CMD yarn start
+CMD yarn start | yarn bunyan
