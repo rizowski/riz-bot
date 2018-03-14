@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node .",
     "lint": "esw .",
-    "test": ""
+    "mocha": "NODE_ENV=${NODE_ENV:-test} mocha",
+    "test": "npm run mocha -- --opts ./test/mocha.opts",
+    "unit:test": "npm run mocha -- --opts ./test/unit-mocha.opts"
   },
   "author": "Colten Rouska",
   "license": "MIT",
