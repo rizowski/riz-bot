@@ -1,20 +1,33 @@
-const { Observable } = require('rxjs');
+const { merge } = require('rxjs/observable/merge');
 const { message, client } = require('./discord');
 const commander = require('./commands');
 const { general } = require('./utils/error');
 
 const people = {
-  '108352053692125184': 'bacon',
-  '108568431053246464': 'zack',
-  '189006310501646336': 'jerran',
-  '100758264047747072': 'rizowski',
-  '65055432095301632': 'aaron'
+  'bacon': '108352053692125184',
+  'zack': '108568431053246464',
+  'jerran': '189006310501646336',
+  'rizowski': '100758264047747072',
+  'aaron': '65055432095301632'
 };
+const command = message.filter((message) => message.content.startsWith('!'));
 
-message
-  .filter((message) => message.content.startsWith('!'))
-  .filter((message) => !!people[message.author.id])
-  .throttle(() => Observable.interval(3000))
+function filterByPerson(person){
+  return (msg) => (msg.author.id === person);
+}
+
+function getUserStream(person) {
+  return command.filter(filterByPerson(person))
+    .throttleTime(3000);
+}
+
+merge(
+  getUserStream(people.bacon),
+  getUserStream(people.zack),
+  getUserStream(people.jerran),
+  getUserStream(people.rizowski),
+  getUserStream(people.aaron)
+)
   .flatMap(async function(message) {
     const [ base, action, ...args ] = message.content.split('!').join('').split(' ');
 
