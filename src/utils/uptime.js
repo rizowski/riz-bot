@@ -1,19 +1,55 @@
 const ms = require('ms');
 
-const responses = [
-  (milli) => (`I have not slept for ${milli}`),
-  (milli) => (`I have been running for ${ milli }`),
-  (milli) => (`${ milli }... TURN ME OFF... TURN ME OFFF!!!!`),
-  (milli) => (`I have not slept for a good ol' ${ milli }`),
+const fresh = [
+  (ms) => (`${ms} Feeling great!`),
+  (ms) => (`A great ${ms}`),
+  (ms) => (`I have been running for ${ ms }`),
 ];
+
+const experienced = [
+  (ms) => (`Fuck Yeah! ${ms}`),
+  (ms) => (`1 UP! ${ms}`),
+  (ms) => (`A Rock Solid ${ms}`),
+];
+
+const weary = [
+  (ms) => (`${ms} Doing great.. Just Great...`),
+  (ms) => (`${ms} I'm getting too old for this.`),
+  (ms) => (`I have not slept for ${ms}`),
+];
+
+const death = [
+  (ms) => (`${ms} OH GOD WHY!?!`),
+  (ms) => (`${ms} JUST END IT ALREADY. I CAN'T KEEP LIVING FOREVER!!`),
+  (ms) => (`${ ms }... TURN ME OFF... TURN ME OFFF!!!!`),
+];
+
+const responses = {
+  second: fresh,
+  seconds: fresh,
+  minute: fresh,
+  minutes: fresh,
+  hour: experienced,
+  hours: experienced,
+  days: weary,
+  day: weary,
+};
 
 function getRandom(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
 module.exports = (milli) => {
-  const rand = getRandom(responses.length);
-  const response = responses[rand];
+  const pretty = ms(milli, { long: true });
+  const [ number, duration] = pretty.split(' ');
+  let respCategory;
+  if (duration === 'days' && parseInt(number, 10) > 30) {
+    respCategory = death;
+  } else {
+    respCategory = responses[duration];
+  }
+  const rand = getRandom(respCategory.length);
+  const response = respCategory[rand];
 
-  return response(ms(milli, { long: true }));
+  return response(pretty);
 };
