@@ -5,6 +5,12 @@ const logger = require('./logger');
 
 const local = path.resolve(__dirname, '../config/local.json');
 
+const config = {
+  discord: {
+    token: ''
+  },
+};
+
 module.exports = {
   createConfig() {
     try {
@@ -12,7 +18,7 @@ module.exports = {
     } catch(e) {
       if (e.code === 'ENOENT') {
         logger.log({ message: 'Writing the config file', path: local });
-        fs.writeFileSync(local, JSON.stringify({ discord: { token: '' } }, null, 2));
+        fs.writeFileSync(local, JSON.stringify(config, null, 2));
       }
     }
   }

@@ -53,28 +53,32 @@ function createPending(ping, region){
   };
 }
 
-function isInGuild(message) {
-  return message.guild && message.guild.available;
-}
+module.exports = {
+  title: 'Change Server Region',
+  example: 'change region',
+  description: 'Change the region of the server.',
+  requirements: {
+    guild: true,
+  },
+  trigger(cmd) {
+    return /change region/i.test(cmd);
+  },
+  conditions: [],
+  async action(client, message) {
+    const regions = await client.fetchVoiceRegions();
+    const america = regions.filterArray((r) => /^US/.test(r.name) && r.id !== message.guild.region);
+    const sorted = america.sort((a, b) => b.optimal);
+    const theChosenOne = sorted[0];
 
-module.exports = async (client, message) => {
-  if (!isInGuild(message)) {
-    return;
+    await message.channel.send(createPending(client.ping, theChosenOne.name));
+
+    try {
+      await message.guild.setRegion(theChosenOne.id);
+    } catch(e) {
+      await message.channel.send(createError('Failed to change region', e.message));
+      return;
+    }
+
+    await message.channel.send(createSuccess(client.ping, theChosenOne.name));
   }
-
-  const regions = await client.fetchVoiceRegions();
-  const america = regions.filterArray((r) => /^US/.test(r.name) && r.id !== message.guild.region);
-  const sorted = america.sort((a, b) => b.optimal);
-  const theChosenOne = sorted[0];
-
-  await message.channel.send(createPending(client.ping, theChosenOne.name));
-
-  try {
-    await message.guild.setRegion(theChosenOne.id);
-  } catch(e) {
-    await message.channel.send(createError('Failed to change region', e.message));
-    return;
-  }
-
-  await message.channel.send(createSuccess(client.ping, theChosenOne.name));
 };

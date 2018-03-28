@@ -4,3 +4,5 @@ test
 config/local.*
 local/
 *.log*
+scripts
+.eslint*
