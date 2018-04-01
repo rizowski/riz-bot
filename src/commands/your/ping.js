@@ -1,9 +1,9 @@
 const { createRandRange } = require('../../utils/math');
 
 const responses = [
-  (ping) => (`My ping to discord is ${ ping }.`),
-  (ping) => (`Holy Shit! A whole ${ ping }.`),
-  () => ('PONG!')
+  (ping) => (`My ping to discord is ${ ping } ms.`),
+  (ping) => (`Holy Shit! A whole ${ ping } ms.`),
+  () => ('PONG ms!')
 ];
 
 module.exports = {

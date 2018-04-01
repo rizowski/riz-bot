@@ -3,14 +3,8 @@ const { message, client } = require('./discord');
 const commander = require('./commands');
 const { general } = require('./utils/error');
 const logger = require('./logger');
+const { bacon, zack, jerran, aaron, rizowski } = require('./users');
 
-const people = {
-  bacon: '108352053692125184',
-  zack: '108568431053246464',
-  jerran: '189006310501646336',
-  rizowski: '100758264047747072',
-  aaron: '65055432095301632'
-};
 const command = message.filter((message) => message.content.startsWith('!'));
 
 function byPerson(person){
@@ -23,11 +17,11 @@ function getUserStream(person) {
 }
 
 merge(
-  getUserStream(people.bacon),
-  getUserStream(people.zack),
-  getUserStream(people.jerran),
-  getUserStream(people.rizowski),
-  getUserStream(people.aaron)
+  getUserStream(bacon.discordId),
+  getUserStream(zack.discordId),
+  getUserStream(jerran.discordId),
+  getUserStream(rizowski.discordId),
+  getUserStream(aaron.discordId)
 )
   .flatMap(async function(message) {
     const [ base, action, ...args ] = message.content.replace('!', '').split(' ');
