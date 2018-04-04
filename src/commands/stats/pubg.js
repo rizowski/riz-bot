@@ -2,6 +2,7 @@ const moment = require('moment');
 const pubg = require('../../pubg');
 const users = require('../../users');
 const logger = require('../../logger');
+const pubgStats = require('../../transformers/pubg-stats');
 
 const usernames = /^(rizowski|rokwar|bacon|zack|namelessginger)$/i;
 const regions = /^(na|eu)$/i;
@@ -53,32 +54,6 @@ function getArgs(args, message) {
   return obj;
 }
 
-function clean(str = '') {
-  return str.split('.')[0];
-}
-
-const rankImages = {
-  F: 'https://imgur.com/o8jUS2C.png',
-  'D-': 'https://imgur.com/01VBDNn.png',
-  D: 'https://imgur.com/bLC9N2c.png',
-  'D+': 'https://imgur.com/xxYHw5d.png',
-  'C-': 'https://imgur.com/Z9Ne54Z.png',
-  C: 'https://imgur.com/Huk0bRp.png',
-  'C+': 'https://imgur.com/xR3xW2H.png',
-  'B-': 'https://imgur.com/mdyIMD4.png',
-  B: 'https://imgur.com/RN8uqG2.png',
-  'B+': 'https://imgur.com/8wvhgS7.png',
-  'A-': 'https://imgur.com/Zcp9zGe.png',
-  A: 'https://imgur.com/H3g3qXy.png',
-  'A+': 'https://imgur.com/f4UyWJl.png',
-  S: 'https://imgur.com/AzxM5sN.png',
-  SS: 'https://imgur.com/MvJDS3G.png'
-};
-
-function getRankImage(rank) {
-  return rankImages[rank] || rankImages.F;
-}
-
 module.exports = {
   title: 'Look up pubg stats',
   example: 'pubg stats [username] [tpp|fpp] [solo|duo|squad]',
@@ -90,81 +65,16 @@ module.exports = {
   conditions: [],
   async action(client, message, args = []) {
     const parsedArgs = getArgs(args, message);
+    const { mode, matchType, region } = parsedArgs;
     const user = users.getUser(parsedArgs.username);
+    const username = user.pubgUsername || parsedArgs.username;
+
     try {
       const { data } = await pubg.getStats(parsedArgs);
 
-      await message.channel.send({
-        // content: '',
-        embed: {
-          title: `Get Ranked ${ user.pubgUsername || parsedArgs.username }!`,
-          // color: '',
-          description: `Current Stats for ${parsedArgs.mode} ${parsedArgs.matchType} in ${parsedArgs.region}`,
-          // url: '',
-          thumbnail: {
-            url: getRankImage(data.grade)
-          },
-          fields: [
-            {
-              name: 'Rating',
-              value: data.stats.rating,
-              inline: true
-            },
-            {
-              name: 'Total Wins',
-              value: data.stats.win_matches_cnt,
-              inline: true
-            },
-            {
-              name: 'Current Rank',
-              value: data.ranks.rating,
-              inline: true
-            },
-            {
-              name: 'Total Matches',
-              value: data.stats.matches_cnt,
-              inline: true
-            },
-            {
-              name: 'Total Kills',
-              value: data.stats.kills_sum,
-              inline: true
-            },
-            {
-              name: 'Max Kills',
-              value: data.stats.kills_max,
-              inline: true
-            },
-            {
-              name: 'Longest Kill',
-              value: clean(`${ data.stats.longest_kill_max }`),
-              inline: true
-            },
-            {
-              name: 'Highest Rank',
-              value: data.max_ranks.rating,
-              inline: true,
-            },
-            {
-              name: 'Average Rank',
-              value: clean(`${ data.stats.rank_avg }`),
-              inline: true
-            },
-            {
-              name: 'Average Damage Dealt',
-              value: clean(`${data.stats.damage_dealt_avg}`),
-              inline: true
-            },
-            // {
-            //   name: 'Average Time Survived',
-            //   value: clean(`${data.stats.time_survived_avg}`),
-            //   inline: true
-            // }
-          ]
-        }
-      });
+      await message.channel.send(pubgStats({ data, username, mode, matchType, region }));
     } catch(e) {
-      logger.error(e);
+      logger.error({ message: e.message });
 
       if(e.createEmbed){
         const embed = e.createEmbed();

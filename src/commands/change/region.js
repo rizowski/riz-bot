@@ -1,14 +1,4 @@
-function createError(title, reason){
-  const description = reason && `Reason ${reason}`;
-
-  return {
-    embed: {
-      title,
-      color: 12124160,
-      description,
-    }
-  };
-}
+const { errors } = require('../../transformers/embeds');
 
 function createSuccess(ping, region) {
   return {
@@ -75,7 +65,7 @@ module.exports = {
     try {
       await message.guild.setRegion(theChosenOne.id);
     } catch(e) {
-      await message.channel.send(createError('Failed to change region', e.message));
+      await message.channel.send(errors.general('Failed to change region', e.message));
       return;
     }
 

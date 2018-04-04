@@ -1,11 +1,12 @@
 const { merge } = require('rxjs/observable/merge');
 const { message, client } = require('./discord');
 const commander = require('./commands');
-const { general } = require('./utils/error');
+const { errors } = require('./transformers/embeds');
 const logger = require('./logger');
 const { bacon, zack, jerran, aaron, rizowski } = require('./users');
+const token = '!';
 
-const command = message.filter((message) => message.content.startsWith('!'));
+const command = message.filter((message) => message.content.startsWith(token));
 
 function byPerson(person){
   return (msg) => (msg.author.id === person);
@@ -13,7 +14,7 @@ function byPerson(person){
 
 function getUserStream(person) {
   return command.filter(byPerson(person))
-    .throttleTime(3000);
+    .throttleTime(1000);
 }
 
 merge(
@@ -24,22 +25,23 @@ merge(
   getUserStream(aaron.discordId)
 )
   .flatMap(async function(message) {
-    const [ base, action, ...args ] = message.content.replace('!', '').split(' ');
+    const [ base, action, ...args ] = message.content.replace(token, '').split(' ');
 
     try {
       commander.do(base, action, client, message, args);
     } catch(e) {
-      const command = [{ name: 'command', value: `!${ base } ${ action || '' }` }];
-      const err = general('Failed to run command', `I suck: ${e.message}`, command);
+      const command = [{ name: 'command', value: `${token}${ base } ${ action || '' }` }];
+      const err = errors.general('Failed to run command', `I suck: ${e.message}`, command);
+
       await message.channel.send(err);
     }
 
+    logger.log({ message: 'Responding', username: message.author.username, discriminator: message.author.discriminator, channel: message.channel.name });
+
     return message;
   })
-  .subscribe((msg) => {
-    logger.log({ message: 'Responding', username: msg.author.username, discriminator: msg.author.discriminator, channel: msg.channel.name });
-  }, (e) => {
-    logger.error({ message: 'Unexpected', error: e });
+  .subscribe(() => { }, (e) => {
+    logger.error({ message: 'Unexpected Error', error: e.message });
   }, () => logger.log({ message: 'done' }));
 
 process.on('unhandledRejection', error => {

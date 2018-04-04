@@ -1,4 +1,5 @@
 const ms = require('ms');
+const math = require('./math');
 
 const fresh = [
   (ms) => (`${ms} Feeling great!`),
@@ -35,20 +36,12 @@ const responses = {
   day: weary,
 };
 
-function getRandom(max) {
-  return Math.floor(Math.random() * Math.floor(max));
-}
-
 module.exports = (milli) => {
   const pretty = ms(milli, { long: true });
   const [ number, duration] = pretty.split(' ');
-  let respCategory;
-  if (duration === 'days' && parseInt(number, 10) > 30) {
-    respCategory = death;
-  } else {
-    respCategory = responses[duration];
-  }
-  const rand = getRandom(respCategory.length);
+  const isDeath = duration === 'days' && parseInt(number, 10) > 30;
+  const respCategory = isDeath ? death : responses[duration];
+  const rand = math.createRandMax(respCategory.length);
   const response = respCategory[rand];
 
   return response(pretty);

@@ -19,11 +19,12 @@ function verifyContract(cmds) {
   ];
 
   return cmds.map((cmd) => {
-    Object.keys(cmd).forEach((key) => {
-      if (!keys.includes(key)) {
-        throw new Error(`${key} is missing from ${cmd.title}`);
-      }
-    });
+    Object.keys(cmd)
+      .forEach((key) => {
+        if (!keys.includes(key)) {
+          throw new Error(`${key} is missing from ${cmd.title}`);
+        }
+      });
 
     return cmd;
   });

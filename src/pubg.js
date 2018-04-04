@@ -27,10 +27,10 @@ module.exports = {
 
       return { data /* url */};
     } catch (e) {
-      logger.error(e.response.status, e.response.statusText, username, e.request.path);
+      logger.error({ code: e.response.status, status: e.response.statusText, username, url: e.request.path, message: e.message });
 
       if (e.response.status === 404) {
-        throw new InputError({ reason: `${username} doesn't seem to have played this season.` });
+        throw new InputError({ reason: `${ username } doesn't seem to have played this season.` });
       }
 
       throw e;

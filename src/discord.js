@@ -1,6 +1,6 @@
 
 
-const Discord = require('discord.js');
+const { Client } = require('discord.js');
 const { Observable } = require('rxjs');
 
 const settings = require('./settings');
@@ -9,7 +9,7 @@ const logger = require('./logger');
 settings.createConfig();
 
 const config = require('config').get('discord');
-const client = new Discord.Client();
+const client = new Client();
 
 client.on('ready', () => {
   logger.log({ message: 'Logged in', who: client.user.tag, guildCount: client.guilds.size, userCount: client.users.size });
@@ -21,7 +21,9 @@ const message = Observable.fromEvent(client, 'message');
 const error = Observable.fromEvent(client, 'error');
 
 error.subscribe((message) => {
-  logger.error({ message });
+  const errorMsg = `(${ message.error.code }) ${ message.message }`;
+
+  logger.error({ message: errorMsg });
 });
 
 client.login(config.token)

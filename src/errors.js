@@ -1,3 +1,5 @@
+const { errors } = require('./transformers/embeds');
+
 function defaultArgs(msgOrObj) {
   return typeof msgOrObj === 'object'
     ? msgOrObj
@@ -19,16 +21,7 @@ class BaseError extends Error {
   }
 
   createEmbed() {
-    const description = this.reason && `Reason: ${this.reason}`;
-
-    return {
-      embed: {
-        title: this.title,
-        color: 12124160,
-        description,
-        fields: this.fields,
-      }
-    };
+    return errors.general(this.title, this.reason, this.fields);
   }
 }
 

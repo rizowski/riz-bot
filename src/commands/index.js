@@ -49,7 +49,9 @@ module.exports = {
     if(cmd === 'help') {
       return help.action(client, message);
     }
+
     const executableCommands = commands.filter((c) => c.trigger(`${cmd} ${subCmd}`));
+
     if (!executableCommands.length) {
       return null;
     }

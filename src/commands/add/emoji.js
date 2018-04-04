@@ -1,4 +1,4 @@
-const { general } = require('../../utils/error');
+const { errors } = require('../../transformers/embeds');
 const { GeneralError, InputError } = require('../../errors');
 
 module.exports = {
@@ -55,7 +55,7 @@ module.exports = {
           return { result: false, error: new GeneralError({ title: 'Emoji Exists', reason: 'You didn\'t check the emoji list.', fields }) };
         }
 
-        return true;
+        return { result: true };
       }
     }
   ],
@@ -73,10 +73,10 @@ module.exports = {
       await message.react(createEmoji);
     } catch(e) {
       if (e.message.includes('did not match validation regex')) {
-        return message.channel.send(general('Failed to create emoji', 'Bad emoji name', [{ name: 'Proposed Emoji Name', value: emojiName }]));
+        return message.channel.send(errors.general('Failed to create emoji', 'Bad emoji name', [{ name: 'Proposed Emoji Name', value: emojiName }]));
       }
 
-      return await message.channel.send(general('Failed to create Emoji', e.message));
+      return await message.channel.send(errors.general('Failed to create Emoji', e.message));
     }
   }
 };
