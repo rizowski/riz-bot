@@ -74,7 +74,7 @@ function getArgs(args, message) {
 
 module.exports = {
   title: 'Look up pubg stats',
-  example: 'pubg stats [username] [tpp|fpp] [solo|duo|squad]',
+  example: 'pubg stats [username] [tpp|fpp] [solo|duo|squad] [season 1..4|2018-03]',
   description: 'Check your stats for pubg. Arguments can come in any order.',
   requirements: { },
   trigger(cmd) {
