@@ -36,7 +36,7 @@ merge(
       await message.channel.send(err);
     }
 
-    logger.log({ message: 'Responding', username: message.author.username, discriminator: message.author.discriminator, channel: message.channel.name });
+    logger.log({ message: 'Responding', username: message.author.username, discriminator: message.author.discriminator, channel: message.channel.name || 'direct' });
 
     return message;
   })

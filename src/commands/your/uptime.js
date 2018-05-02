@@ -6,7 +6,7 @@ module.exports = {
   description: 'Responds with the admin\'s uptime. May or may not be depressed',
   requirements: {},
   trigger(cmd) {
-    return /(your )?uptime/i.test(cmd);
+    return /^(your )?uptime/i.test(cmd);
   },
   conditions: [],
   action(client, message) {

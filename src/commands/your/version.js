@@ -6,7 +6,7 @@ module.exports = {
   description: 'I\'ll spill the beans and give you my version.',
   requirements: {},
   trigger(cmd) {
-    return /(your )?version/i.test(cmd);
+    return /^(your )?version/i.test(cmd);
   },
   conditions: [],
   action(client, message) {

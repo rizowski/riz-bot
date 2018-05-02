@@ -9,7 +9,7 @@ module.exports = {
     guild: true,
   },
   trigger(cmd){
-    return /(add|create) emoji/i.test(cmd);
+    return /^(add|create) emoji/i.test(cmd);
   },
   conditions: [
     {
@@ -67,7 +67,7 @@ module.exports = {
     const roles = message.mentions.roles.map((role) => role.id);
 
     try {
-      const result = await message.guild.createEmoji(url, emojiName, roles, `I blame ${ message.author.username }`);
+      const result = await message.guild.createEmoji(url, emojiName, roles, `I blame ${ message.author.username } in ${ message.channel.name }`);
 
       const createEmoji = message.guild.emojis.get(result.id);
       await message.react(createEmoji);

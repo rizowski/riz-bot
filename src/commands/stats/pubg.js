@@ -1,4 +1,4 @@
-const moment = require('moment');
+const camelcase = require('lodash.camelcase');
 const pubg = require('../../pubg');
 const users = require('../../users');
 const logger = require('../../logger');
@@ -6,24 +6,42 @@ const pubgStats = require('../../transformers/pubg-stats');
 
 const usernames = /^(rizowski|rokwar|bacon|zack|namelessginger)$/i;
 const regions = /^(na|eu)$/i;
-const seasons = /^(current|last)$/i;
+const seasonsReg = /^(current)|(season\s[0-1][0-9])$/i;
+const dateSeason = /^(2017-pre[5-6])|(2018-[0-1][0-9])$/i;
 const matchType = /^(squad|duo|solo)$/i;
 const modes = /^(tpp|fpp)$/i;
+const seasons = {
+  season4: '2018-04',
+  season3: '2018-03',
+  season2: '2018-02',
+  season1: '2018-01',
+  preSeason6: '2017-pre6',
+  preSeason5: '2017-pre5',
+  current: '2018-04',
+};
 
 function getArgs(args, message) {
   const obj = args.reduce((acc, thing) => {
     if (usernames.test(thing)) {
       acc.username = thing;
     }
+
     if (regions.test(thing)) {
       acc.region = thing;
     }
-    if (seasons.test(thing)) {
-      acc.season = thing;
+
+    if (seasonsReg.test(thing)) {
+      acc.season = seasons[camelcase(thing)] || thing;
     }
+
+    if (!acc.season && dateSeason.test(thing)) {
+      acc.season = seasons.current;
+    }
+
     if (matchType.test(thing)) {
       acc.matchType = thing;
     }
+
     if (modes.test(thing)) {
       acc.mode = thing;
     }
@@ -39,8 +57,8 @@ function getArgs(args, message) {
     obj.region = 'na';
   }
 
-  if(!obj.season){
-    obj.season = moment().format('YYYY-MM');
+  if (!obj.season) {
+    obj.season = seasons.current;
   }
 
   if(!obj.matchType){
@@ -60,7 +78,7 @@ module.exports = {
   description: 'Check your stats for pubg. Arguments can come in any order.',
   requirements: { },
   trigger(cmd) {
-    return /(pubg stats|((rank|stats) pubg))/i.test(cmd);
+    return /^(pubg stats|((rank|stats) pubg))/i.test(cmd);
   },
   conditions: [],
   async action(client, message, args = []) {
@@ -76,9 +94,13 @@ module.exports = {
     } catch(e) {
       logger.error({ message: e.message });
 
-      if(e.createEmbed){
+      if (e.createEmbed) {
         const embed = e.createEmbed();
-        return message.channel.send(embed);
+        return await message.channel.send(embed);
+      }
+
+      if (e.response.status === 422 && Object.keys(e.response.data.errors).includes('season')) {
+        return await message.channel.send(`God damn it <@${users.rizowski.discordId}>... The season ${parsedArgs.season} doesn't exist.`);
       }
     }
   }

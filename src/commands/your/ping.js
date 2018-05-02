@@ -12,7 +12,7 @@ module.exports = {
   description: 'Responds with the admin\'s ping to discord',
   requirements: {},
   trigger(cmd){
-    return /(your )?ping/i.test(cmd);
+    return /^(your )?ping/i.test(cmd);
   },
   conditions: [],
   action(client, message) {
