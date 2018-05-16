@@ -22,13 +22,13 @@ function getRankImage(rank) {
   return rankImages[rank] || rankImages.F;
 }
 
-module.exports = ({ data, username, mode, matchType, region }) => {
+module.exports = ({ data, username, mode, matchType, region, season }) => {
   return {
     // content: '',
     embed: {
       title: `Get Ranked ${ username }!`,
       // color: '',
-      description: `Current stats for ${mode} ${matchType} in ${region}`,
+      description: `Current stats for ${mode} ${matchType} in ${region} for the season ${ season }`,
       // url: '',
       thumbnail: {
         url: getRankImage(data.grade)

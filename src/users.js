@@ -45,7 +45,8 @@ module.exports = {
     const searchTerm = thing.toLowerCase();
 
     return find(users, (u) => {
-      return u.discordId === searchTerm
+      return `<@${u.discordId}>` === searchTerm
+          || u.discordId === searchTerm
           || u.pubgId === searchTerm
           || u.pubgUsername === searchTerm
           || u.user === searchTerm;

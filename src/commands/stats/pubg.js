@@ -1,10 +1,10 @@
+/* eslint-disable complexity */
 const camelcase = require('lodash.camelcase');
 const pubg = require('../../pubg');
 const users = require('../../users');
 const logger = require('../../logger');
 const pubgStats = require('../../transformers/pubg-stats');
 
-const usernames = /^(rizowski|rokwar|bacon|zack|namelessginger)$/i;
 const regions = /^(na|eu)$/i;
 const seasonsReg = /^(current)|(season\s[0-1][0-9])$/i;
 const dateSeason = /^(2017-pre[5-6])|(2018-[0-1][0-9])$/i;
@@ -23,8 +23,10 @@ const seasons = {
 
 function getArgs(args, message) {
   const obj = args.reduce((acc, thing) => {
-    if (usernames.test(thing)) {
-      acc.username = thing;
+    if (!acc.username) {
+      const user = users.getUser(thing);
+
+      acc.username = user && user.pubgUsername;
     }
 
     if (regions.test(thing)) {
@@ -84,7 +86,7 @@ module.exports = {
   conditions: [],
   async action(client, message, args = []) {
     const parsedArgs = getArgs(args, message);
-    const { mode, matchType, region } = parsedArgs;
+    const { mode, matchType, region, season } = parsedArgs;
     const user = users.getUser(parsedArgs.username);
     const username = user.pubgUsername || parsedArgs.username;
 
@@ -93,7 +95,7 @@ module.exports = {
     try {
       const { data } = await pubg.getStats(parsedArgs);
 
-      await message.channel.send(pubgStats({ data, username, mode, matchType, region }));
+      await message.channel.send(pubgStats({ data, username, mode, matchType, region, season }));
     } catch(e) {
       logger.error({ message: e.message });
 
