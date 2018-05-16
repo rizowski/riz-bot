@@ -51,7 +51,7 @@ module.exports = {
     guild: true,
   },
   trigger(cmd) {
-    return /change region/i.test(cmd);
+    return /^(change|move) region(s)?/i.test(cmd);
   },
   conditions: [],
   async action(client, message) {

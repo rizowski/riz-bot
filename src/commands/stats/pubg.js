@@ -11,13 +11,14 @@ const dateSeason = /^(2017-pre[5-6])|(2018-[0-1][0-9])$/i;
 const matchType = /^(squad|duo|solo)$/i;
 const modes = /^(tpp|fpp)$/i;
 const seasons = {
+  season5: '2018-05',
   season4: '2018-04',
   season3: '2018-03',
   season2: '2018-02',
   season1: '2018-01',
   preSeason6: '2017-pre6',
   preSeason5: '2017-pre5',
-  current: '2018-04',
+  current: '2018-05',
 };
 
 function getArgs(args, message) {
@@ -78,7 +79,7 @@ module.exports = {
   description: 'Check your stats for pubg. Arguments can come in any order.',
   requirements: { },
   trigger(cmd) {
-    return /^(pubg stats|((rank|stats) pubg))/i.test(cmd);
+    return /^((pubg stats)|((rank|stats) pubg))/i.test(cmd);
   },
   conditions: [],
   async action(client, message, args = []) {
@@ -86,6 +87,8 @@ module.exports = {
     const { mode, matchType, region } = parsedArgs;
     const user = users.getUser(parsedArgs.username);
     const username = user.pubgUsername || parsedArgs.username;
+
+    logger.log(parsedArgs);
 
     try {
       const { data } = await pubg.getStats(parsedArgs);

@@ -8,7 +8,7 @@ const commands = flatten([
 ]);
 
 function verifyContract(cmds) {
-  const keys = [
+  const requiredKeys = [
     'title',
     'description',
     'example',
@@ -19,17 +19,15 @@ function verifyContract(cmds) {
   ];
 
   return cmds.map((cmd) => {
-    Object.keys(cmd)
-      .forEach((key) => {
-        if (!keys.includes(key)) {
-          throw new Error(`${key} is missing from ${cmd.title}`);
-        }
-      });
+    const cmdKeys = Object.keys(cmd);
+    requiredKeys.forEach((rKey) => {
+      if(!cmdKeys.includes(rKey)){
+        throw new Error(`${rKey} is missing from ${cmd.title || cmd.description}`);
+      }
+    });
 
     return cmd;
   });
 }
 
 module.exports = verifyContract(commands);
-
-// knutsorb express $40.68
