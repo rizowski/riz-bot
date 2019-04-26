@@ -1,9 +1,7 @@
 const { errors } = require('./transformers/embeds');
 
 function defaultArgs(msgOrObj) {
-  return typeof msgOrObj === 'object'
-    ? msgOrObj
-    : { title: msgOrObj };
+  return typeof msgOrObj === 'object' ? msgOrObj : { title: msgOrObj };
 }
 
 class BaseError extends Error {
@@ -25,12 +23,47 @@ class BaseError extends Error {
   }
 }
 
-class GeneralError extends BaseError {
+class GeneralError extends BaseError {}
+
+class EmbedError extends Error {
   constructor(msgOrObj) {
-    super(msgOrObj);
+    const { title, reason, fields, command } = defaultArgs(msgOrObj);
+
+    super(`${title} ${reason || ''}`);
+
+    Error.captureStackTrace(this, this.constructor);
+
+    this.title = title;
+    this.command = command;
+    this.color = 12124160;
+    this.reason = reason;
+    this.fields = fields;
+  }
+
+  createEmbed() {
+    const description = this.reason && `Reason: ${this.reason}`;
+
+    return {
+      embed: {
+        title: this.title,
+        color: 12124160,
+        description,
+        fields: this.fields,
+      },
+    };
   }
 }
 
+class PreconditionError extends EmbedError {
+  constructor(...args) {
+    super(...args);
+
+    this.title = 'Precondition Failed';
+    this.color = 'yellow';
+  }
+}
+
+class CommandError extends EmbedError {}
 class InputError extends BaseError {
   constructor(msgOrObj) {
     super(msgOrObj);
@@ -48,10 +81,10 @@ class GuildError extends BaseError {
   }
 }
 
-
-
 module.exports = {
   GeneralError,
   InputError,
-  GuildError
+  GuildError,
+  PreconditionError,
+  CommandError,
 };

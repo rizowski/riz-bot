@@ -1,7 +1,6 @@
-
 module.exports = {
   errors: {
-    general(title, reason, fields){
+    general(title, reason, fields) {
       const description = reason && `Reason: ${reason}`;
 
       return {
@@ -10,8 +9,8 @@ module.exports = {
           color: 12124160,
           description,
           fields,
-        }
+        },
       };
-    }
+    },
   },
 };

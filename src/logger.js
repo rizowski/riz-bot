@@ -1,13 +1,6 @@
-const bunyan = require('bunyan');
+const pino = require('pino');
 
-let log = bunyan.createLogger({ name: 'riz-bot' });
-
-const logger = {
-  trace: log.trace.bind(log),
-  log: log.info.bind(log),
-  debug: log.debug.bind(log),
-  warn: log.warn.bind(log),
-  error: log.error.bind(log),
-};
+const pinoLogger = pino({ messageKey: 'message' });
+const logger = pinoLogger.child({ name: 'riz-bot' });
 
 module.exports = logger;

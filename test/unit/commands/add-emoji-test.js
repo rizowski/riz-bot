@@ -7,16 +7,8 @@ describe('add:emoji', () => {
     let invalidCommands;
 
     before(() => {
-      validCommands = [
-        'add emoji',
-        'create emoji',
-        'create emoji something',
-      ];
-      invalidCommands = [
-        'emoji',
-        ' emoji',
-        'i want to add emoji',
-      ];
+      validCommands = ['add emoji', 'create emoji', 'create emoji something'];
+      invalidCommands = ['emoji', ' emoji', 'i want to add emoji'];
     });
 
     it('does not trigger on invalid commands', () => {

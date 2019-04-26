@@ -7,15 +7,8 @@ describe('your:version', () => {
     let invalidCommands;
 
     before(() => {
-      validCommands = [
-        'your version',
-        'version',
-        'your version additional params'
-      ];
-      invalidCommands = [
-        'what is your version',
-        'your'
-      ];
+      validCommands = ['your version', 'version', 'your version additional params'];
+      invalidCommands = ['what is your version', 'your'];
     });
 
     it('does not trigger on invalid commands', () => {

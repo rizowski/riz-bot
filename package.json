@@ -4,9 +4,11 @@
   "description": "Rizowski's discord server bot",
   "main": "src/index.js",
   "scripts": {
-    "start": "node .",
-    "lint": "esw .",
+    "lint:fix": "npm run lint -- --fix",
+    "lint": "xo --quiet",
+    "local": "nodemon . | pino-pretty",
     "mocha": "NODE_ENV=${NODE_ENV:-test} mocha",
+    "start": "node .",
     "test": "npm run mocha -- --opts ./test/mocha.opts",
     "unit:test": "npm run mocha -- --opts ./test/unit-mocha.opts"
   },
@@ -15,26 +17,89 @@
   "engines": {
     "node": ">=8.9.3"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "npm run lint:fix",
+      "git add"
+    ],
+    "*.{js,css,md,json}": [
+      "prettier --write --print-width=160",
+      "git add"
+    ]
+  },
+  "xo": {
+    "prettier": true,
+    "envs": [
+      "mocha"
+    ],
+    "plugins": [
+      "unicorn"
+    ],
+    "rules": {
+      "prefer-destructuring": "warn",
+      "comma-dangle": [
+        "error",
+        "always-multiline"
+      ],
+      "object-curly-spacing": [
+        "error",
+        "always"
+      ],
+      "indent": [
+        "error",
+        2
+      ],
+      "arrow-parens": [
+        "error",
+        "always"
+      ],
+      "capitalized-comments": "off",
+      "unicorn/no-process-exit": "warn"
+    }
+  },
+  "prettier": {
+    "arrowParens": "always",
+    "printWidth": 100,
+    "semi": true,
+    "useTabs": false,
+    "tabWidth": 2,
+    "trailingComma": "es5",
+    "singleQuote": true,
+    "bracketSpacing": true
+  },
   "devDependencies": {
     "chai": "^4.1.2",
-    "eslint": "^4.18.2",
-    "eslint-config-rizowski": "^1.0.2",
-    "eslint-plugin-node": "^6.0.1",
-    "eslint-watch": "^3.1.3",
-    "mocha": "^5.0.2",
-    "nyc": "^11.4.1",
-    "sinon": "^4.4.2"
+    "husky": "^2.1.0",
+    "lint-staged": "^8.1.5",
+    "mocha": "^6.1.4",
+    "nodemon": "^1.18.11",
+    "nyc": "^14.0.0",
+    "pino-pretty": "^2.6.1",
+    "prettier": "^1.17.0",
+    "sinon": "^7.3.2",
+    "xo": "^0.24.0"
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "bunyan": "^1.8.12",
-    "config": "^1.30.0",
-    "debug": "^3.1.0",
+    "config": "^3.1.0",
+    "debug": "^4.1.1",
     "discord.js": "^11.3.2",
     "lodash.camelcase": "^4.3.0",
+    "lodash.defaultsdeep": "^4.6.0",
     "lodash.find": "^4.6.0",
     "lodash.flatten": "^4.4.0",
+    "lodash.merge": "^4.6.1",
+    "lodash.set": "^4.3.2",
+    "lowdb": "^1.0.0",
+    "moment": "^2.24.0",
     "ms": "^2.1.1",
+    "pino": "^5.12.3",
+    "redis": "^2.8.0",
     "rxjs": "^5.5.6"
   }
 }

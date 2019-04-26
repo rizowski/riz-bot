@@ -2,3 +2,5 @@ config/local.*
 node_modules
 *.orig
 *.log*
+
+package-lock.json

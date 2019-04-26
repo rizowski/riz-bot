@@ -1,3 +1,1 @@
-module.exports = [
-  require('./region'),
-];
+module.exports = [require('./region')];

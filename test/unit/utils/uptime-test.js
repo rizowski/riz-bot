@@ -1,17 +1,15 @@
 // const { expect } = require('chai');
-const uptime = require('../../../src/utils/uptime');
+const uptime = require('../../../src/commands/your/uptime/uptime');
 
 describe('unit: uptime responses', () => {
   const times = {
     twoMins: 100000,
     oneHour: 10000000,
     oneDay: 100000000,
-    plusThrity: 10000000000
+    plusThrity: 10000000000,
   };
 
-  before(() => {
-
-  });
+  before(() => {});
 
   it('death', () => {
     console.log(uptime(times.plusThrity));

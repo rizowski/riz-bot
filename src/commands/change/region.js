@@ -9,19 +9,19 @@ function createSuccess(ping, region) {
         {
           name: 'Ping',
           value: `${ping}`,
-          inline: true
+          inline: true,
         },
         {
           name: 'Current Region',
           value: region,
-          inline: true
-        }
-      ]
-    }
+          inline: true,
+        },
+      ],
+    },
   };
 }
 
-function createPending(ping, region){
+function createPending(ping, region) {
   return {
     embed: {
       title: 'Changing Region...',
@@ -31,44 +31,47 @@ function createPending(ping, region){
         {
           name: 'Current Ping',
           value: `${ping}`,
-          inline: true
+          inline: true,
         },
         {
           name: 'Chosen Region',
           value: region,
-          inline: true
-        }
-      ]
-    }
+          inline: true,
+        },
+      ],
+    },
   };
 }
 
-module.exports = {
+const cmd = {
   title: 'Change Server Region',
   example: 'change region',
   description: 'Change the region of the server.',
   requirements: {
     guild: true,
   },
-  trigger(cmd) {
-    return /^(change|move) region(s)?/i.test(cmd);
+  regex: /^(change|move) region(s)?/i,
+  trigger(content) {
+    return cmd.regex.test(content);
   },
   conditions: [],
   async action(client, message) {
     const regions = await client.fetchVoiceRegions();
-    const america = regions.filterArray((r) => /^US/.test(r.name) && r.id !== message.guild.region);
+    const america = regions.filterArray((r) => r.name.startsWith('US') && r.id !== message.guild.region);
     const sorted = america.sort((a, b) => b.optimal);
-    const theChosenOne = sorted[0];
+    const [theChosenOne] = sorted;
 
     await message.channel.send(createPending(client.ping, theChosenOne.name));
 
     try {
       await message.guild.setRegion(theChosenOne.id);
-    } catch(e) {
+    } catch (e) {
       await message.channel.send(errors.general('Failed to change region', e.message));
       return;
     }
 
     await message.channel.send(createSuccess(client.ping, theChosenOne.name));
-  }
+  },
 };
+
+module.exports = cmd;

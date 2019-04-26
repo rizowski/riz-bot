@@ -7,15 +7,8 @@ describe('your:ping', () => {
     let invalidCommands;
 
     before(() => {
-      validCommands = [
-        'your ping',
-        'ping',
-        'your ping additional params'
-      ];
-      invalidCommands = [
-        'what is your ping',
-        'your'
-      ];
+      validCommands = ['your ping', 'ping', 'your ping additional params'];
+      invalidCommands = ['what is your ping', 'your'];
     });
 
     it('does not trigger on invalid commands', () => {

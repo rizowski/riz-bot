@@ -1,15 +1,18 @@
 const pkg = require('../../../package');
 
-module.exports = {
+const cmd = {
   title: 'Get My Version',
   example: 'your version',
-  description: 'I\'ll spill the beans and give you my version.',
+  description: "I'll spill the beans and give you my version.",
   requirements: {},
-  trigger(cmd) {
-    return /^(your )?version/i.test(cmd);
+  regex: /^(your )?version/i,
+  trigger(content) {
+    return cmd.regex.test(content);
   },
   conditions: [],
   action(client, message) {
-    return message.channel.send(`v${ pkg.version }`);
-  }
+    return message.channel.send(`v${pkg.version}`);
+  },
 };
+
+module.exports = cmd;

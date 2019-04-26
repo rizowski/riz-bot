@@ -7,15 +7,8 @@ describe('your:uptime', () => {
     let invalidCommands;
 
     before(() => {
-      validCommands = [
-        'your uptime',
-        'uptime',
-        'your uptime additional params'
-      ];
-      invalidCommands = [
-        'what is your uptime',
-        'your'
-      ];
+      validCommands = ['your uptime', 'uptime', 'your uptime additional params'];
+      invalidCommands = ['what is your uptime', 'your'];
     });
 
     it('does not trigger on invalid commands', () => {
