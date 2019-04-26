@@ -1,4 +1,3 @@
-const find = require('lodash.find');
 const logger = require('../logger');
 const { GuildError } = require('../errors');
 const commands = require('./all');
@@ -8,51 +7,47 @@ function isInGuild(message) {
   return message.guild && message.guild.available;
 }
 
-function getMissingReqs(cmdReq, currentReqs){
-  return Object.entries(cmdReq)
-    .reduce((acc, [ key, value ]) => {
-      // console.log(entry);
-      const current = currentReqs[key];
-      if(current.value !== value) {
-        acc.push(current);
-      }
-      return acc;
-    }, []);
+function getMissingReqs(cmdReq, currentReqs) {
+  return Object.entries(cmdReq).reduce((acc, [key, value]) => {
+    const current = currentReqs[key];
+
+    if (current.value !== value) {
+      acc.push(current);
+    }
+
+    return acc;
+  }, []);
 }
 
-function getCurrentReqs(message/*, client*/) {
+function getCurrentReqs(message /* , client */) {
   return {
     guild: {
       error: new GuildError(),
-      value: isInGuild(message)
+      value: isInGuild(message),
     },
   };
 }
 
 function getErrors(conditions, message, client, args) {
-  const results = conditions.map(({ name, condition }) => {
-    logger.log({ message: `Checking if ${ name }...` });
-    return condition(message, client, args);
-  });
+  for (const { name, condition } of conditions) {
+    logger.info(`Checking if ${name}...`);
 
-  const error = find(results, (r) => !r.result);
+    const result = condition(message, client, args);
 
-  if(error){
-    return error.error;
+    if (result) {
+      return result;
+    }
   }
-
-  return null;
 }
 
 module.exports = {
-  async do(cmd, subCmd, client, message, args) {
-    if(cmd === 'help') {
+  async doAction(content, client, message) {
+    if (help.trigger(content)) {
       return help.action(client, message);
     }
+    const executableCommands = commands.filter((c) => c.trigger(content));
 
-    const executableCommands = commands.filter((c) => c.trigger(`${cmd} ${subCmd}`));
-
-    if (!executableCommands.length) {
+    if (executableCommands.length === 0) {
       return null;
     }
 
@@ -61,23 +56,46 @@ module.exports = {
     }
 
     const currentReqs = getCurrentReqs(message);
-    const [ command ] = executableCommands;
+    const [command] = executableCommands;
+    logger.debug({ title: command.title });
     const { requirements } = command;
     const missingReqs = getMissingReqs(requirements, currentReqs);
 
-    if (missingReqs.length) {
-      const [ req ] = missingReqs;
+    if (missingReqs.length > 0) {
+      const [req] = missingReqs;
       const embeds = req.error.createEmbed();
 
       return message.channel.send(embeds);
     }
 
-    const error = getErrors(command.conditions, message, client, args);
+    const args = content
+      .replace(command.regex, '')
+      .split(' ')
+      .filter(Boolean);
+
+    const error = await getErrors(command.conditions, message, client, args);
 
     if (error) {
-      return message.channel.send(error.createEmbed());
+      const title = `Failed to run ${command.title}`;
+      const color = 12124160;
+
+      const response = {
+        embed: {
+          title,
+          color,
+          description: error.description,
+          fields: [
+            {
+              name: 'Reason:',
+              value: error.reason,
+            },
+          ],
+        },
+      };
+
+      return message.channel.send(response);
     }
 
     return command.action(client, message, args);
-  }
+  },
 };

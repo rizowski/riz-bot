@@ -1,26 +1,31 @@
-const { errors } = require('../../transformers/embeds');
-const { GeneralError, InputError } = require('../../errors');
+const { PreconditionError, CommandError } = require('../../errors');
 
-module.exports = {
+const cmd = {
   title: 'Add Emoji',
   example: 'add emoji [emojiName] [roles...]',
   description: 'Add an emoji to the server. defaults to filename if emojiName is not provided',
   requirements: {
     guild: true,
   },
-  trigger(cmd){
-    return /^(add|create) emoji/i.test(cmd);
+  regex: /^(add|create) emoji/i,
+  trigger(content) {
+    return cmd.regex.test(content);
+  },
+  parseArgs(args, message) {
+    const attachment = message.attachments.values().next().value;
+    const roles = message.mentions.roles.map((role) => role.id);
+    const { url, filename } = attachment;
+
+    return { name: args[0], roles, url, filename };
   },
   conditions: [
     {
       name: 'there is an attachment',
       condition(message) {
-        if (!message.attachments.size) {
-          return { result: false, error: new InputError({ reason: 'Emoji is required. Please attach an image' }) };
+        if (message.attachments.size === 0) {
+          return new PreconditionError({ reason: 'Emoji is required. Please attach an image' });
         }
-
-        return { result: true };
-      }
+      },
     },
     {
       name: 'emoji is proportional',
@@ -28,55 +33,64 @@ module.exports = {
         const attachment = message.attachments.values().next().value;
         const { height, width } = attachment;
 
-        if(height !== width){
-          const dimensions = [
-            { name: 'height', value: `${ height }`, inline: true },
-            { name: 'width', value: `${ width }`, inline: true },
-          ];
+        if (height !== width) {
+          const dimensions = [{ name: 'height', value: `${height}`, inline: true }, { name: 'width', value: `${width}`, inline: true }];
 
-          return { result: false, error: new InputError({ reason: 'Emoji malformed. Emojis are best suited with equal dimensions', fields: dimensions }) };
+          return new PreconditionError({
+            reason: 'Emoji malformed. Emojis are best suited with equal dimensions',
+            fields: dimensions,
+          });
         }
-
-        return { result: true };
-      }
+      },
     },
     {
       name: 'emoji exists',
       condition(message, client, args) {
         const attachment = message.attachments.values().next().value;
         const { filename } = attachment;
-        const [ name ] = args;
-        const [ emojiName = name ] = filename.split('.');
+        const [name] = args;
+        const [emojiName = name] = filename.split('.');
         const emojiExists = message.guild.emojis.exists('name', emojiName);
 
         if (emojiExists) {
           const fields = [{ name: 'Name', value: emojiName }];
 
-          return { result: false, error: new GeneralError({ title: 'Emoji Exists', reason: 'You didn\'t check the emoji list.', fields }) };
+          return new PreconditionError({
+            title: 'Emoji Exists',
+            reason: "You didn't check the emoji list.",
+            fields,
+          });
         }
-
-        return { result: true };
-      }
-    }
+      },
+    },
   ],
-  async action(client, message, args=[]) {
-    const attachment = message.attachments.values().next().value;
-    const { url, filename } = attachment;
-    const [ name ] = args;
-    const emojiName = name || filename.split('.')[0];
-    const roles = message.mentions.roles.map((role) => role.id);
+  actions: [
+    async (client, message, args) => {
+      const { name, filename, url, roles } = args;
+      const emojiName = name || filename.split('.')[0];
 
-    try {
-      const result = await message.guild.createEmoji(url, emojiName, roles, `I blame ${ message.author.username } in ${ message.channel.name }`);
+      const result = await message.guild.createEmoji(url, emojiName, roles, `I blame ${message.author.username} in ${message.channel.name}`);
 
       const createEmoji = message.guild.emojis.get(result.id);
       await message.react(createEmoji);
-    } catch(e) {
-      if (e.message.includes('did not match validation regex')) {
-        return message.channel.send(errors.general('Failed to create emoji', 'Bad emoji name', [{ name: 'Proposed Emoji Name', value: emojiName }]));
-      }
+    },
+  ],
+  onError(error, parsedArgs) {
+    const title = 'Failed to create emoji';
 
-      return await message.channel.send(errors.general('Failed to create Emoji', e.message));
+    if (error.message.includes('did not match validation regex')) {
+      throw new CommandError({
+        title,
+        reason: 'Bad emoji name',
+        fields: [{ name: 'Proposed Emoji Name', value: parsedArgs.emojiName }],
+      });
     }
-  }
+
+    throw new CommandError({
+      title,
+      reason: error.message,
+    });
+  },
 };
+
+module.exports = cmd;

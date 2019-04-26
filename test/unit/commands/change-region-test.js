@@ -7,19 +7,8 @@ describe('change:region', () => {
     let invalidCommands;
 
     before(() => {
-      validCommands = [
-        'change region',
-        'change regions',
-        'move regions',
-        'move region',
-        'change region something'
-      ];
-      invalidCommands = [
-        'i want to change region',
-        'change my region',
-        'change server region',
-        ' change region'
-      ];
+      validCommands = ['change region', 'change regions', 'move regions', 'move region', 'change region something'];
+      invalidCommands = ['i want to change region', 'change my region', 'change server region', ' change region'];
     });
 
     it('does not trigger on invalid commands', () => {

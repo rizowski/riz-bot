@@ -1,4 +1,5 @@
 const find = require('lodash.find');
+const redis = require('./controllers/cache');
 
 const bacon = {
   discordId: '108352053692125184',
@@ -11,7 +12,7 @@ const zack = {
   discordId: '108568431053246464',
   pubgId: '59fe3738ae385e00013f4ffc',
   pubgUsername: 'kozaku',
-  user: 'zack'
+  user: 'zack',
 };
 
 const jerran = {
@@ -32,29 +33,38 @@ const aaron = {
   discordId: '65055432095301632',
   pubgId: '59fe352ffd5b360001cb6bbd',
   pubgUsername: 'rokwar',
-  user: 'aaron'
+  user: 'aaron',
 };
 
-const users = [
-  bacon, zack, jerran, rizowski, aaron,
-];
-
+const users = [bacon, zack, jerran, rizowski, aaron];
 
 module.exports = {
-  getUser(thing = '') {
+  async getUser(thing = '') {
     const searchTerm = thing.toLowerCase();
 
-    return find(users, (u) => {
-      return `<@${u.discordId}>` === searchTerm
-          || u.discordId === searchTerm
-          || u.pubgId === searchTerm
-          || u.pubgUsername === searchTerm
-          || u.user === searchTerm;
-    });
+    const result = await redis.get(thing);
+
+    if (!result) {
+      const found = find(users, (u) => {
+        return (
+          `<@${u.discordId}>` === searchTerm || u.discordId === searchTerm || u.pubgId === searchTerm || u.pubgUsername === searchTerm || u.user === searchTerm
+        );
+      });
+
+      if (!found) {
+        return;
+      }
+
+      await redis.set(thing, found);
+
+      return found;
+    }
+
+    return result;
   },
   bacon,
   zack,
   jerran,
   rizowski,
-  aaron
+  aaron,
 };

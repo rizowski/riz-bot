@@ -1,3 +1,1 @@
-module.exports = [
-  require('./emoji')
-];
+module.exports = [require('./emoji')];

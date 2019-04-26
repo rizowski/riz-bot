@@ -1,5 +1,5 @@
 module.exports = {
   discord: {
-    token: 'DISCORD_TOKEN'
-  }
+    token: 'DISCORD_TOKEN',
+  },
 };

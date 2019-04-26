@@ -12,21 +12,24 @@ function createHelp() {
     embed: {
       title: 'Help',
       description: 'Any command needs to be prefixed with !',
-      fields
-    }
+      fields,
+    },
   };
 }
 
-module.exports = {
+const cmd = {
   title: 'The Help Command',
   example: 'help',
   description: 'This will show this help.',
   requirements: {},
-  trigger: (cmd) => {
-    return /help/i.test(cmd);
+  regex: /help/i,
+  trigger: (content) => {
+    return cmd.regex.test(content);
   },
   conditions: [],
   action(client, message) {
     return message.channel.send(createHelp());
-  }
+  },
 };
+
+module.exports = cmd;

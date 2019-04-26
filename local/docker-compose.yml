@@ -1,9 +1,24 @@
 version: "3"
 services:
-  riz-bot:
-    build: ../
-    container_name: riz-bot
+  # riz-bot:
+  #   build: ../
+  #   container_name: riz-bot
+  #   volumes:
+  #     - ~/configs/riz-bot:/usr/src/app/config
+  #   networks:
+  #     - personal
+  #   environment:
+  #     DISCORD_TOEKN: ""
+  redis:
+    container_name: redis
+    image: redis:alpine
+    networks:
+      - personal
     volumes:
-      - ~/configs/riz-bot:/usr/src/app/config
-    environment:
-      DISCORD_TOEKN: ""
+      - ~/storage/redis:/data
+    ports:
+      - 6379:6379
+    restart: always
+networks:
+  personal:
+    external: false

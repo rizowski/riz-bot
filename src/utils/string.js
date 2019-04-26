@@ -1,6 +1,5 @@
-
 module.exports = {
-  cleanDecimals(str = ''){
+  cleanDecimals(str = '') {
     return str.split('.')[0];
   },
 };
