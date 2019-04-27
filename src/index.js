@@ -19,6 +19,7 @@ function getUserStream(person) {
 
 ready.subscribe(() => {
   logger.info({
+    token,
     message: 'Logged in',
     who: client.user.tag,
     guildCount: client.guilds.size,
