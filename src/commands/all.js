@@ -7,6 +7,7 @@ const commands = flatten([
   require('./stats'),
   require('./set'),
   require('./join'),
+  require('./get'),
 ]);
 
 function verifyContract(cmds) {

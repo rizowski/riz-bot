@@ -1,11 +1,6 @@
 const { errors } = require('../../transformers/embeds');
 const logger = require('../../logger');
-
-const emoji = {
-  yea: '<:yea:379726963906183168>',
-  meh: '<:meh:544914132407681042>',
-  nay: '<:nay:379727005224140800>',
-};
+const emoji = require('../../emojis');
 
 function calculatePing(newPing, oldPing) {
   const mathed = oldPing - newPing;
@@ -23,7 +18,7 @@ function calculatePing(newPing, oldPing) {
 
 function createSuccess({ newPing, oldPing }, region) {
   const color = region.optimal ? 16312092 : 47377;
-  const stars = region.optimal ? ':star:' : '';
+  const stars = region.optimal ? emoji.star : '';
   const improvement = calculatePing(newPing, oldPing);
 
   return {
@@ -105,6 +100,7 @@ const cmd = {
   },
   conditions: [],
   async action(client, message) {
+    await message.channel.startTyping();
     const regions = await client.fetchVoiceRegions();
     const oldRegion = regions.get(message.guild.region);
     const sorted = regions
@@ -119,9 +115,11 @@ const cmd = {
       await message.guild.setRegion(theChosenOne.id);
       const newPing = Math.floor(client.ping);
       await message.channel.send(createSuccess({ newPing, oldPing }, theChosenOne));
-    } catch (e) {
-      logger.error(e);
-      await message.channel.send(errors.general('Failed to change region', e.message, []));
+    } catch (error) {
+      logger.error(error);
+      await message.channel.send(errors.general('Failed to change region', error.message, []));
+    } finally {
+      await message.channel.stopTyping();
     }
   },
 };

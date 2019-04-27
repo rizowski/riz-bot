@@ -3,13 +3,17 @@ const { createRandRange } = require('../../utils/math');
 const responses = [
   (ping) => `My ping to discord is ${ping} ms.`,
   (ping) => `Holy Shit! A whole ${ping} ms.`,
+  (ping) => `${ping}ms`,
+  (ping) => `${ping / 1000}s`,
+  (ping) => `${ping / (1000 * 60)}min`,
+  (ping) => `${ping / (1000 * 60 * 60)}hr`,
   () => 'PONG ms!',
 ];
 
 const cmd = {
   title: 'Get my Ping',
   example: 'your ping',
-  description: "Responds with the admin's ping to discord",
+  description: "Responds with the bot's current ping to discord",
   requirements: {},
   regex: /^(your )?ping/i,
   trigger(content) {

@@ -1,9 +1,10 @@
+const config = require('config');
 const commands = require('./all');
 
 function createHelp() {
   const fields = commands.map((cmd) => {
     return {
-      name: `!${cmd.example}`,
+      name: `${config.token}${cmd.example}`,
       value: cmd.description,
       inline: true,
     };

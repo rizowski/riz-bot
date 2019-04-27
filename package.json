@@ -1,6 +1,6 @@
 {
   "name": "riz-bot",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Rizowski's discord server bot",
   "main": "src/index.js",
   "scripts": {

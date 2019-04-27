@@ -1,12 +1,11 @@
 const { merge } = require('rxjs/observable/merge');
+const { token } = require('config');
 const { login, message, client, ready, debug, warn } = require('./clients/discord');
 const commander = require('./commands');
 const { errors } = require('./transformers/embeds');
 const logger = require('./logger');
 const redis = require('./controllers/cache');
 const { bacon, zack, jerran, aaron, rizowski } = require('./users');
-
-const token = '!';
 
 const command = message.filter((message) => message.content.startsWith(token));
 
