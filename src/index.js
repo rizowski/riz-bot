@@ -1,5 +1,5 @@
 const { merge } = require('rxjs/observable/merge');
-const { token } = require('config');
+const config = require('config');
 const { login, message, client, ready, debug, warn } = require('./clients/discord');
 const commander = require('./commands');
 const { errors } = require('./transformers/embeds');
@@ -7,7 +7,7 @@ const logger = require('./logger');
 const redis = require('./controllers/cache');
 const { bacon, zack, jerran, aaron, rizowski } = require('./users');
 
-const command = message.filter((message) => message.content.startsWith(token));
+const command = message.filter((message) => message.content.startsWith(config.token));
 
 function byPerson(person) {
   return (msg) => msg.author.id === person;
@@ -19,7 +19,8 @@ function getUserStream(person) {
 
 ready.subscribe(() => {
   logger.info({
-    token,
+    config,
+    token: config.token,
     message: 'Logged in',
     who: client.user.tag,
     guildCount: client.guilds.size,
@@ -39,13 +40,13 @@ login.subscribe(() => {
     getUserStream(aaron.discordId)
   )
     .flatMap(async (message) => {
-      const content = message.content.replace(token, '');
+      const content = message.content.replace(config.token, '');
 
       try {
         await commander.doAction(content, client, message);
       } catch (e) {
         logger.error(e);
-        const command = [{ name: 'command', value: `${token}${content}` }];
+        const command = [{ name: 'command', value: `${config.token}${content}` }];
         const err = errors.general('Failed to run command', `I suck: ${e.message}`, command);
 
         await message.channel.send(err);
