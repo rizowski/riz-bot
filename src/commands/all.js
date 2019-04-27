@@ -1,6 +1,13 @@
 const flatten = require('lodash.flatten');
 
-const commands = flatten([require('./add'), require('./change'), require('./your'), require('./stats'), require('./set'), require('./join')]);
+const commands = flatten([
+  require('./add'),
+  require('./change'),
+  require('./your'),
+  require('./stats'),
+  require('./set'),
+  require('./join'),
+]);
 
 function verifyContract(cmds) {
   const requiredKeys = ['title', 'description', 'example', 'requirements', 'trigger', 'conditions'];

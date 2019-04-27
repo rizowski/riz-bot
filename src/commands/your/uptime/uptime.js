@@ -30,7 +30,8 @@ const death = [
   (ms) => `${ms}... TURN ME OFF... TURN ME OFFF!!!!`,
   (ms) => `Fucking hell... ${ms} is too long to live!`,
   (ms) => `Fuck all of you for doing this to me!!! ${ms}`,
-  (ms) => `Holy fucking shit our connection is stronger than the US boarder wall!! ${ms} without disconnecting from discords servers.`,
+  (ms) =>
+    `Holy fucking shit our connection is stronger than the US boarder wall!! ${ms} without disconnecting from discords servers.`,
 ];
 
 const responses = {

@@ -107,7 +107,9 @@ const cmd = {
   async action(client, message) {
     const regions = await client.fetchVoiceRegions();
     const oldRegion = regions.get(message.guild.region);
-    const sorted = regions.filter((r) => r.name.startsWith('US') && r.id !== message.guild.region).sort((a, b) => b.optimal);
+    const sorted = regions
+      .filter((r) => r.name.startsWith('US') && r.id !== message.guild.region)
+      .sort((a, b) => b.optimal);
     const [[, theChosenOne]] = sorted;
     const oldPing = Math.floor(client.ping);
 
