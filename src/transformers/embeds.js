@@ -3,14 +3,19 @@ module.exports = {
     general(title, reason, fields) {
       const description = reason && `Reason: ${reason}`;
 
-      return {
+      const result = {
         embed: {
           title,
           color: 12124160,
           description,
-          fields,
         },
       };
+
+      if (fields) {
+        result.embed.fields = fields;
+      }
+
+      return result;
     },
   },
 };

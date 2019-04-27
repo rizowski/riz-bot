@@ -10,8 +10,8 @@ const cmd = {
     return cmd.regex.test(content);
   },
   conditions: [],
-  action(client, message) {
-    return message.channel.send(`v${pkg.version}`);
+  async action(client, message) {
+    return message.channel.send(`My current version is: \`v${pkg.version}\``);
   },
 };
 

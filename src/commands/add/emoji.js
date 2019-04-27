@@ -64,17 +64,15 @@ const cmd = {
       },
     },
   ],
-  actions: [
-    async (client, message, args) => {
-      const { name, filename, url, roles } = args;
-      const emojiName = name || filename.split('.')[0];
+  async action(client, message, args) {
+    const { name, filename, url, roles } = args;
+    const emojiName = name || filename.split('.')[0];
 
-      const result = await message.guild.createEmoji(url, emojiName, roles, `I blame ${message.author.username} in ${message.channel.name}`);
+    const result = await message.guild.createEmoji(url, emojiName, roles, `I blame ${message.author.username} in ${message.channel.name}`);
 
-      const createEmoji = message.guild.emojis.get(result.id);
-      await message.react(createEmoji);
-    },
-  ],
+    const createEmoji = message.guild.emojis.get(result.id);
+    await message.react(createEmoji);
+  },
   onError(error, parsedArgs) {
     const title = 'Failed to create emoji';
 

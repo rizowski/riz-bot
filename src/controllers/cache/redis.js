@@ -23,6 +23,7 @@ module.exports = {
           if (noop) {
             resolve();
           }
+
           client.quit(() => {
             resolve();
           });
@@ -33,6 +34,7 @@ module.exports = {
           if (noop) {
             resolve();
           }
+
           client.get(`${what}`, (err, result) => {
             if (err) return reject(err);
 
@@ -51,6 +53,7 @@ module.exports = {
           if (noop) {
             resolve();
           }
+
           client.set(what, value, (err) => {
             if (err) return reject(err);
             resolve();
@@ -62,6 +65,7 @@ module.exports = {
           if (noop) {
             resolve();
           }
+
           client.del(what, (err, val) => {
             if (err) return reject(err);
             resolve(val);

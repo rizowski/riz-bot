@@ -1,6 +1,6 @@
 {
   "name": "riz-bot",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Rizowski's discord server bot",
   "main": "src/index.js",
   "scripts": {
@@ -15,7 +15,7 @@
   "author": "Colten Rouska",
   "license": "MIT",
   "engines": {
-    "node": ">=8.9.3"
+    "node": ">=10"
   },
   "husky": {
     "hooks": {
@@ -61,16 +61,6 @@
       "capitalized-comments": "off",
       "unicorn/no-process-exit": "warn"
     }
-  },
-  "prettier": {
-    "arrowParens": "always",
-    "printWidth": 100,
-    "semi": true,
-    "useTabs": false,
-    "tabWidth": 2,
-    "trailingComma": "es5",
-    "singleQuote": true,
-    "bracketSpacing": true
   },
   "devDependencies": {
     "chai": "^4.1.2",
