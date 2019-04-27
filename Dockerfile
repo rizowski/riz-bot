@@ -6,6 +6,7 @@ WORKDIR /usr/src/app
 RUN node -v
 # Copy Files
 COPY . .
+COPY ./config ./config
 
 RUN yarn install --prod
 
