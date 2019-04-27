@@ -34,7 +34,10 @@ const cmd = {
         const { height, width } = attachment;
 
         if (height !== width) {
-          const dimensions = [{ name: 'height', value: `${height}`, inline: true }, { name: 'width', value: `${width}`, inline: true }];
+          const dimensions = [
+            { name: 'height', value: `${height}`, inline: true },
+            { name: 'width', value: `${width}`, inline: true },
+          ];
 
           return new PreconditionError({
             reason: 'Emoji malformed. Emojis are best suited with equal dimensions',
@@ -68,7 +71,12 @@ const cmd = {
     const { name, filename, url, roles } = args;
     const emojiName = name || filename.split('.')[0];
 
-    const result = await message.guild.createEmoji(url, emojiName, roles, `I blame ${message.author.username} in ${message.channel.name}`);
+    const result = await message.guild.createEmoji(
+      url,
+      emojiName,
+      roles,
+      `I blame ${message.author.username} in ${message.channel.name}`
+    );
 
     const createEmoji = message.guild.emojis.get(result.id);
     await message.react(createEmoji);

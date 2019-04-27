@@ -1,6 +1,10 @@
 const { createRandRange } = require('../../utils/math');
 
-const responses = [(ping) => `My ping to discord is ${ping} ms.`, (ping) => `Holy Shit! A whole ${ping} ms.`, () => 'PONG ms!'];
+const responses = [
+  (ping) => `My ping to discord is ${ping} ms.`,
+  (ping) => `Holy Shit! A whole ${ping} ms.`,
+  () => 'PONG ms!',
+];
 
 const cmd = {
   title: 'Get my Ping',

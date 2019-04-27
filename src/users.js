@@ -47,7 +47,11 @@ module.exports = {
     if (!result) {
       const found = find(users, (u) => {
         return (
-          `<@${u.discordId}>` === searchTerm || u.discordId === searchTerm || u.pubgId === searchTerm || u.pubgUsername === searchTerm || u.user === searchTerm
+          `<@${u.discordId}>` === searchTerm ||
+          u.discordId === searchTerm ||
+          u.pubgId === searchTerm ||
+          u.pubgUsername === searchTerm ||
+          u.user === searchTerm
         );
       });
 
