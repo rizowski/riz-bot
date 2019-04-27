@@ -44,11 +44,13 @@ login.subscribe(() => {
       try {
         await commander.doAction(content, client, message);
       } catch (e) {
-        const command = [{ name: 'command', value: `${token}` }];
+        logger.error(e);
+        const command = [{ name: 'command', value: `${token}${content}` }];
         const err = errors.general('Failed to run command', `I suck: ${e.message}`, command);
 
         await message.channel.send(err);
       }
+
       const resCount = (await redis.get('response.count')) || 0;
       redis.set('response.count', resCount + 1);
 
@@ -70,5 +72,5 @@ login.subscribe(() => {
 });
 
 process.on('unhandledRejection', (error) => {
-  console.log(error);
+  logger.error(error);
 });

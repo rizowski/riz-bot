@@ -5,16 +5,19 @@ function createHelp() {
     return {
       name: `!${cmd.example}`,
       value: cmd.description,
+      inline: true,
     };
   });
 
-  return {
+  const help = {
     embed: {
       title: 'Help',
-      description: 'Any command needs to be prefixed with !',
+      // description: 'Any command needs to be prefixed with !',
       fields,
     },
   };
+
+  return help;
 }
 
 const cmd = {
