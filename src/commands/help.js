@@ -4,12 +4,16 @@ const logger = require('../logger');
 function createHelp(pms) {
   const fields = require('./all')
     .map((cmd) => {
-      if (
-        cmd.requirements &&
-        cmd.requirements.basic !== pms.basic &&
-        cmd.requirements.mod !== pms.mod
-      ) {
-        return undefined;
+      const { requirements } = cmd;
+
+      if (Object.keys(requirements).length > 0) {
+        if (requirements.basic && requirements.basic !== pms.basic) {
+          return undefined;
+        }
+
+        if (requirements.mod && requirements.mod !== pms.mod) {
+          return undefined;
+        }
       }
 
       if (cmd.title === 'Help') {

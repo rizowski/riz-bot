@@ -41,6 +41,7 @@ const cmd = {
     });
 
     await user.removeRoles(rolesToRemove, 'User Requested');
+    await message.react('👍');
   },
 };
 
