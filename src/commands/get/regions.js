@@ -6,13 +6,14 @@ const cmd = {
   description: 'Responds with current available US Regions to switch to',
   requirements: {
     guild: true,
+    basic: true,
   },
   regex: /^(get|fetch) regions/i,
   trigger(content) {
     return cmd.regex.test(content);
   },
   conditions: [],
-  async action(client, message) {
+  async action({ client, message }) {
     await message.channel.startTyping();
     const regions = await client.fetchVoiceRegions();
     const sorted = regions.filter((r) => r.name.startsWith('US')).sort((a, b) => b.optimal);

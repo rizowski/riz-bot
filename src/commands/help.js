@@ -1,38 +1,62 @@
 const config = require('config');
-const commands = require('./all');
+const logger = require('../logger');
 
-function createHelp() {
-  const fields = commands.map((cmd) => {
-    return {
-      name: `${config.token}${cmd.example}`,
-      value: cmd.description,
-      inline: true,
-    };
-  });
+function createHelp(pms) {
+  const fields = require('./all')
+    .map((cmd) => {
+      if (
+        cmd.requirements &&
+        cmd.requirements.basic !== pms.basic &&
+        cmd.requirements.mod !== pms.mod
+      ) {
+        return undefined;
+      }
+
+      if (cmd.title === 'Help') {
+        return undefined;
+      }
+
+      return {
+        name: `${config.token}${cmd.example}`,
+        value: cmd.description,
+        inline: true,
+      };
+    })
+    .filter(Boolean);
 
   const help = {
     embed: {
       title: 'Help',
-      // description: 'Any command needs to be prefixed with !',
       fields,
     },
   };
+
+  if (fields.length === 0) {
+    return;
+  }
 
   return help;
 }
 
 const cmd = {
-  title: 'The Help Command',
+  title: 'Help',
   example: 'help',
   description: 'This will show this help.',
   requirements: {},
-  regex: /help/i,
+  regex: /^help$/i,
   trigger: (content) => {
     return cmd.regex.test(content);
   },
   conditions: [],
-  action(client, message) {
-    return message.channel.send(createHelp());
+  action({ message, permissions }) {
+    const content = createHelp(permissions);
+
+    if (!content) {
+      logger.warn('Nothing to respond with. User does not have permissions');
+      return;
+    }
+
+    return message.channel.send(content);
   },
 };
 

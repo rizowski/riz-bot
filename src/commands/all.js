@@ -1,13 +1,15 @@
 const flatten = require('lodash.flatten');
 
 const commands = flatten([
+  [require('./help')],
   require('./add'),
   require('./change'),
   require('./your'),
-  require('./stats'),
   require('./set'),
   require('./join'),
+  require('./leave'),
   require('./get'),
+  require('./remove'),
 ]);
 
 function verifyContract(cmds) {

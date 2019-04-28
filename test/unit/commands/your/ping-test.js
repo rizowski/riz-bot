@@ -1,14 +1,14 @@
 const { expect } = require('chai');
-const command = require('../../../src/commands/your/uptime');
+const command = require('../../../../src/commands/your/ping');
 
-describe('your:uptime', () => {
+describe('your:ping', () => {
   describe('trigger', () => {
     let validCommands;
     let invalidCommands;
 
     before(() => {
-      validCommands = ['your uptime', 'uptime', 'your uptime additional params'];
-      invalidCommands = ['what is your uptime', 'your'];
+      validCommands = ['your ping', 'ping', 'your ping additional params'];
+      invalidCommands = ['what is your ping', 'your'];
     });
 
     it('does not trigger on invalid commands', () => {

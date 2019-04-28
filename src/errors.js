@@ -1,5 +1,3 @@
-const { errors } = require('./transformers/embeds');
-
 function defaultArgs(msgOrObj) {
   return typeof msgOrObj === 'object' ? msgOrObj : { title: msgOrObj };
 }
@@ -19,7 +17,21 @@ class BaseError extends Error {
   }
 
   createEmbed() {
-    return errors.general(this.title, this.reason, this.fields);
+    const description = this.reason && `Reason: ${this.reason}`;
+
+    const result = {
+      embed: {
+        title: this.title,
+        color: 12124160,
+        description,
+      },
+    };
+
+    if (this.fields) {
+      result.embed.fields = this.fields;
+    }
+
+    return result;
   }
 }
 
@@ -81,10 +93,26 @@ class GuildError extends BaseError {
   }
 }
 
+class PermissionsError extends BaseError {
+  constructor(msgOrObj = 'Cannot execute command') {
+    super(msgOrObj);
+
+    this.title = 'Permissions Error';
+    this.reason = 'You do not have permissions to execute that command';
+    this.fields = [
+      {
+        name: 'Level Needed',
+        value: msgOrObj,
+      },
+    ];
+  }
+}
+
 module.exports = {
   GeneralError,
   InputError,
   GuildError,
   PreconditionError,
   CommandError,
+  PermissionsError,
 };

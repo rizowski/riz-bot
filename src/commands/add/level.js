@@ -3,6 +3,7 @@ const cmd = {
   description: 'Creates a level that mee6 can assign',
   requirements: {
     guild: true,
+    mod: true,
   },
   regex: /^(add|create) level/i,
   trigger(content) {

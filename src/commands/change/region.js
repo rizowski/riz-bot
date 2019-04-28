@@ -93,13 +93,14 @@ const cmd = {
   description: 'Change the region of the server.',
   requirements: {
     guild: true,
+    mod: true,
   },
   regex: /^(change|move) region(s)?/i,
   trigger(content) {
     return cmd.regex.test(content);
   },
   conditions: [],
-  async action(client, message) {
+  async action({ client, message }) {
     await message.channel.startTyping();
     const regions = await client.fetchVoiceRegions();
     const oldRegion = regions.get(message.guild.region);

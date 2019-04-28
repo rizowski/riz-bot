@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const command = require('../../../src/commands/your/version');
+const command = require('../../../../src/commands/your/version');
 
 describe('your:version', () => {
   describe('trigger', () => {

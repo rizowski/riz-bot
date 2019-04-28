@@ -6,6 +6,7 @@ const cmd = {
   description: 'Add an emoji to the server. defaults to filename if emojiName is not provided',
   requirements: {
     guild: true,
+    mod: true,
   },
   regex: /^(add|create) emoji/i,
   trigger(content) {
@@ -67,7 +68,7 @@ const cmd = {
       },
     },
   ],
-  async action(client, message, args) {
+  async action({ message, args }) {
     const { name, filename, url, roles } = args;
     const emojiName = name || filename.split('.')[0];
 
