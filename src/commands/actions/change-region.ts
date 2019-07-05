@@ -1,6 +1,6 @@
 import { VoiceRegion } from 'discord.js';
-import { Command } from '../command.d';
-import { Embedable } from '../../responses.d';
+import { Command } from '../command';
+import { Embedable } from '../../responses';
 
 import logger from '../../logger';
 import emoji from '../../emojis';
@@ -8,7 +8,7 @@ import { CommandError } from '../../errors';
 
 interface CreatePendingInput {
   theChosenOne: VoiceRegion;
-  oldRegion: VoiceRegion | undefined;
+  oldRegion: VoiceRegion;
 }
 
 interface PingInput {
@@ -70,10 +70,8 @@ function createSuccess({ newPing, oldPing }: PingInput, region: VoiceRegion): Em
   };
 }
 
-function createPending(
-  ping: number,
-  { theChosenOne, oldRegion = {} }: CreatePendingInput
-): Embedable {
+// @ts-ignore
+function createPending(ping: number, { theChosenOne, oldRegion = {} }: CreatePendingInput): Embedable {
   const defaultLocation = 'Earth';
 
   return {
@@ -121,7 +119,7 @@ const cmd: Command = {
   async action({ client, message }) {
     message.channel.startTyping();
     const regions = await client.fetchVoiceRegions();
-    const oldRegion = regions.get(message.guild.region);
+    const oldRegion = regions.get(message.guild.region) || {};
     const sorted = regions
       .filter((r) => r.name.startsWith('US') && r.id !== message.guild.region)
       // @ts-ignore
@@ -129,6 +127,7 @@ const cmd: Command = {
     const [[, theChosenOne]] = sorted;
     const oldPing = Math.floor(client.ping);
 
+    //@ts-ignore
     await message.channel.send(createPending(oldPing, { theChosenOne, oldRegion }));
 
     try {

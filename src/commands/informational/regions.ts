@@ -1,4 +1,4 @@
-import { Command } from '../command.d';
+import { Command } from '../command';
 import emoji from '../../emojis';
 
 const cmd: Command = {
@@ -22,8 +22,7 @@ const cmd: Command = {
 
     const fields = sorted.map((data) => {
       const optimal = data.optimal ? emoji.star : emoji.meh;
-      const name =
-        data.id === message.guild.region ? `Current Region (${data.name})` : `${data.name}`;
+      const name = data.id === message.guild.region ? `Current Region (${data.name})` : `${data.name}`;
 
       return {
         name,

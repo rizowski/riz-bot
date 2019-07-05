@@ -1,14 +1,14 @@
 const { expect } = require('chai');
-const command = require('../../../../src/commands/add/emoji');
+const { default: command } = require('../../../../src/commands/informational/stats');
 
-describe('add:emoji', () => {
+describe('get:stats', () => {
   describe('trigger', () => {
     let validCommands;
     let invalidCommands;
 
     before(() => {
-      validCommands = ['add emoji', 'create emoji', 'create emoji something'];
-      invalidCommands = ['emoji', ' emoji', 'i want to add emoji'];
+      validCommands = ['get stats', 'fetch stats', 'fetch stats something', 'get stats something'];
+      invalidCommands = ['i want to get stats', 'fetch my stats', 'fetch server stats', ' get stats'];
     });
 
     it('does not trigger on invalid commands', () => {

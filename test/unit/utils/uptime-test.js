@@ -1,5 +1,5 @@
-// const { expect } = require('chai');
-const uptime = require('../../../src/commands/your/uptime/uptime');
+// Const { expect } = require('chai');
+const uptime = require('../../../src/commands/informational/uptime/uptime');
 
 describe('unit: uptime responses', () => {
   const times = {
@@ -12,18 +12,18 @@ describe('unit: uptime responses', () => {
   before(() => {});
 
   it('death', () => {
-    console.log(uptime(times.plusThrity));
+    console.log(uptime.default(times.plusThrity));
   });
 
   it('does weary', () => {
-    console.log(uptime(times.oneDay));
+    console.log(uptime.default(times.oneDay));
   });
 
   it('does experienced', () => {
-    console.log(uptime(times.oneHour));
+    console.log(uptime.default(times.oneHour));
   });
 
   it('does fresh', () => {
-    console.log(uptime(times.twoMins));
+    console.log(uptime.default(times.twoMins));
   });
 });

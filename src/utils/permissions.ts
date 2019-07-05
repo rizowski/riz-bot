@@ -18,9 +18,7 @@ export function hasModPermissions(message: Message): boolean {
 }
 
 export function hasBasicPermissions(message: Message): boolean {
-  return (
-    message.author.lastMessage.member.roles.has('572120296052752394') || hasModPermissions(message)
-  );
+  return message.author.lastMessage.member.roles.has('572120296052752394') || hasModPermissions(message);
 }
 
 export function isOwner(message: Message): boolean {

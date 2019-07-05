@@ -1,4 +1,4 @@
-import { Command } from '../command.d';
+import { Command } from '../command';
 import pkg from '../../../package.json';
 
 const cmd: Command = {
