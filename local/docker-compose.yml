@@ -19,16 +19,6 @@ services:
     ports:
       - 6379:6379
     restart: always
-  mongo:
-    image: bitnami/mongodb:latest
-    container_name: mongodb
-    restart: always
-    ports:
-      - 27017:27017
-    environment:
-      MONGODB_USERNAME: bot
-      MONGODB_PASSWORD: password
-      MONGODB_DATABASE: riz-bot
 networks:
   personal:
     external: false
