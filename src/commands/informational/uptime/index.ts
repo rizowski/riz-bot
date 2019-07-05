@@ -1,4 +1,4 @@
-import { Command } from '../../command.d';
+import { Command } from '../../command';
 import uptime from './uptime';
 
 const cmd: Command = {

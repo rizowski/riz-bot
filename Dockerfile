@@ -5,8 +5,9 @@ WORKDIR /usr/src/app
 
 RUN node -v
 # Copy Files
-COPY . .
 COPY ./config ./config
+COPY package.json yarn.lock .yarnclean README.md ./
+COPY ./build .
 
 RUN yarn install --prod
 

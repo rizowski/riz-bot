@@ -1,4 +1,4 @@
-import { Command } from '../command.d';
+import { Command } from '../command';
 
 const cmd: Command = {
   title: 'Get Server Stats',

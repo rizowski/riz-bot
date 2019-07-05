@@ -1,18 +1,6 @@
-import { Role } from 'discord.js';
-import { Command, ActionInput } from '../command.d';
+import { Command, ActionInput } from '../command';
 
 import { PreconditionError } from '../../errors';
-
-interface EmojiArgs {
-  name: string;
-  filename: string;
-  url: string;
-  roles: Role[];
-}
-
-interface EmojiActionInput extends ActionInput {
-  args: EmojiArgs;
-}
 
 const cmd: Command = {
   title: 'Add Emoji',
@@ -57,11 +45,11 @@ const cmd: Command = {
     {
       name: 'emoji exists',
       condition(message, client, args) {
-        const attachment = message.attachments.values().next().value;
-        const { filename } = attachment;
+        const attachment = message.attachments.first();
+
         const [name] = args;
-        const [emojiName = name] = filename.split('.');
-        const emojiExists = message.guild.emojis.exists('name', emojiName);
+        const [emojiName = name] = attachment.filename.split('.');
+        const emojiExists = message.guild.emojis.some((e) => e.name === emojiName);
 
         if (emojiExists) {
           const details = [{ title: 'Name', description: emojiName }];
@@ -75,9 +63,12 @@ const cmd: Command = {
       },
     },
   ],
-  async action({ message, args }: EmojiActionInput) {
-    const { name, filename, url, roles } = args;
+  async action({ message, args }: ActionInput) {
+    const { attachments, mentions } = message;
+    const { url, filename } = attachments.first();
+    const [ name ] = args;
     const emojiName = name || filename.split('.')[0];
+    const roles = mentions.roles;
 
     const result = await message.guild.createEmoji(
       url,

@@ -1,14 +1,14 @@
 const { expect } = require('chai');
-const command = require('../../../../src/commands/your/uptime');
+const { default: command } = require('../../../../src/commands/informational/version');
 
-describe('your:uptime', () => {
+describe('your:version', () => {
   describe('trigger', () => {
     let validCommands;
     let invalidCommands;
 
     before(() => {
-      validCommands = ['your uptime', 'uptime', 'your uptime additional params'];
-      invalidCommands = ['what is your uptime', 'your'];
+      validCommands = ['your version', 'version', 'your version additional params'];
+      invalidCommands = ['what is your version', 'your'];
     });
 
     it('does not trigger on invalid commands', () => {

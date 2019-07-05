@@ -1,14 +1,14 @@
 const { expect } = require('chai');
-const command = require('../../../../src/commands/your/ping');
+const { default: command } = require('../../../../src/commands/actions/change-region');
 
-describe('your:ping', () => {
+describe('change:region', () => {
   describe('trigger', () => {
     let validCommands;
     let invalidCommands;
 
     before(() => {
-      validCommands = ['your ping', 'ping', 'your ping additional params'];
-      invalidCommands = ['what is your ping', 'your'];
+      validCommands = ['change region', 'change regions', 'move regions', 'move region', 'change region something'];
+      invalidCommands = ['i want to change region', 'change my region', 'change server region', ' change region'];
     });
 
     it('does not trigger on invalid commands', () => {

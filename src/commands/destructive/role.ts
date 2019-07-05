@@ -1,5 +1,5 @@
 import { Role } from 'discord.js';
-import { Command } from '../command.d';
+import { Command } from '../command';
 import { PreconditionError } from '../../errors';
 import { features } from '../roles';
 

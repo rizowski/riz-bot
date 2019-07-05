@@ -16,10 +16,7 @@ interface CurrentRequirement {
   mod: Requirement;
 }
 
-function getMissingReqs(
-  cmdReq: CommandRequirement,
-  currentReqs: CurrentRequirement | any
-): Requirement[] {
+function getMissingReqs(cmdReq: CommandRequirement, currentReqs: CurrentRequirement | any): Requirement[] {
   return Object.entries(cmdReq).reduce((acc: Requirement[], [key, value]: [string, boolean]) => {
     const current: Requirement = currentReqs[key];
 

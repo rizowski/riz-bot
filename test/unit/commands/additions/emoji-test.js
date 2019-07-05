@@ -1,24 +1,14 @@
 const { expect } = require('chai');
-const command = require('../../../../src/commands/get/regions');
+const { default: command } = require('../../../../src/commands/additions/emoji');
 
-describe('get:regions', () => {
+describe('add:emoji', () => {
   describe('trigger', () => {
     let validCommands;
     let invalidCommands;
 
     before(() => {
-      validCommands = [
-        'get regions',
-        'fetch regions',
-        'fetch regions something',
-        'get regions something',
-      ];
-      invalidCommands = [
-        'i want to get region',
-        'fetch my region',
-        'fetch server region',
-        ' get region',
-      ];
+      validCommands = ['add emoji', 'create emoji', 'create emoji something', 'add emoji something'];
+      invalidCommands = ['emoji', ' emoji', 'i want to add emoji'];
     });
 
     it('does not trigger on invalid commands', () => {

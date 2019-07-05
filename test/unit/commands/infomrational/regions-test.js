@@ -1,19 +1,14 @@
 const { expect } = require('chai');
-const command = require('../../../../src/commands/get/stats');
+const { default: command } = require('../../../../src/commands/informational/regions');
 
-describe('get:stats', () => {
+describe('get:regions', () => {
   describe('trigger', () => {
     let validCommands;
     let invalidCommands;
 
     before(() => {
-      validCommands = ['get stats', 'fetch stats', 'fetch stats something', 'get stats something'];
-      invalidCommands = [
-        'i want to get stats',
-        'fetch my stats',
-        'fetch server stats',
-        ' get stats',
-      ];
+      validCommands = ['get regions', 'fetch regions', 'fetch regions something', 'get regions something'];
+      invalidCommands = ['i want to get region', 'fetch my region', 'fetch server region', ' get region'];
     });
 
     it('does not trigger on invalid commands', () => {
