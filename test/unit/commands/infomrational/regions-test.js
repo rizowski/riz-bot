@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { default: command } = require('../../../../src/commands/informational/regions');
+const { default: command } = require('../../../../src/events/on-message/on-command/commands/informational/regions');
 
 describe('get:regions', () => {
   describe('trigger', () => {

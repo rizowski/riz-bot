@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { default: command } = require('../../../../src/commands/informational/stats');
+const { default: command } = require('../../../../src/events/on-message/on-command/commands/informational/stats');
 
 describe('get:stats', () => {
   describe('trigger', () => {

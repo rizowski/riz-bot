@@ -1,9 +1,11 @@
-import { Command } from '../command';
+import { Command } from '../command.d';
 
 const cmd: Command = {
   title: 'Get Server Stats',
-  example: 'get stats',
-  description: 'Fetches server stats',
+  help: {
+    examples: ['get stats'],
+    description: 'Fetches server stats',
+  },
   requirements: {
     guild: true,
     basic: true,

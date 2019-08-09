@@ -1,5 +1,5 @@
 import { Command } from '../command.d';
-import { createRandRange } from '../../utils/math';
+import { createRandRange } from '../../../../../utils/math';
 
 const responses = [
   (ping: number) => `My ping to discord is ${ping}/ms.`,
@@ -13,8 +13,10 @@ const responses = [
 
 const cmd: Command = {
   title: 'Get my Ping',
-  example: 'your ping',
-  description: "Responds with the bot's current ping to discord",
+  help: {
+    examples: ['your ping'],
+    description: "Responds with the bot's current ping to discord",
+  },
   requirements: {
     basic: true,
   },
@@ -23,7 +25,7 @@ const cmd: Command = {
     return cmd.regex.test(content);
   },
   conditions: [],
-  action({ client, message }) {
+  async action({ client, message }) {
     const [cleanPing] = `${client.ping}`.split('.');
     const rand = createRandRange(0, responses.length - 1);
     const response = responses[rand];

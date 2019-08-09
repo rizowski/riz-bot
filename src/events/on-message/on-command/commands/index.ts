@@ -1,7 +1,7 @@
 import { Client, Message } from 'discord.js';
-import logger from '../logger';
-import { GuildError, PermissionsError, PreconditionError } from '../errors';
-import { getPermissions, Permissions } from '../utils/permissions';
+import logger from '../../../../logger';
+import { GuildError, PermissionsError, PreconditionError } from '../../../../errors';
+import { getPermissions, Permissions } from '../../../../utils/permissions';
 import { Command, Condition, Requirement as CommandRequirement } from './command.d';
 import commands from './all';
 

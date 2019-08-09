@@ -1,5 +1,5 @@
 import { Message, Client } from 'discord.js';
-import { PreconditionError } from '../errors';
+import { PreconditionError } from '../../../../errors';
 
 export interface Requirement {
   guild?: boolean;
@@ -21,11 +21,15 @@ export interface Condition {
   condition: (message: Message, client: Client, args: string[]) => PreconditionError | void;
 }
 
+export interface HelpDetails {
+  examples: string[];
+  description: string;
+}
+
 export interface Command {
   title: string;
-  example: string;
-  description: string;
   requirements: Requirement;
+  help: HelpDetails;
   regex: RegExp;
   trigger: (content: string) => boolean;
   conditions: Condition[];

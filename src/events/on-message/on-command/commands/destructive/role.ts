@@ -1,12 +1,14 @@
 import { Role } from 'discord.js';
-import { Command } from '../command';
-import { PreconditionError } from '../../errors';
+import { Command } from '../command.d';
+import { PreconditionError } from '../../../../../errors';
 import { features } from '../roles';
 
 const cmd: Command = {
   title: 'Remove Role(s)',
-  example: 'remove role @role',
-  description: 'Removes a or multiple roles from yourself',
+  help: {
+    examples: ['remove role @role'],
+    description: 'Removes a or multiple roles from yourself',
+  },
   requirements: {
     basic: true,
   },

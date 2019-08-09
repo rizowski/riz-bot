@@ -1,10 +1,12 @@
-import { Command } from '../command';
-import emoji from '../../emojis';
+import { Command } from '../command.d';
+import emoji from '../../../../../emojis';
 
 const cmd: Command = {
   title: 'US Regions',
-  example: 'get regions',
-  description: 'Responds with current available US Regions to switch to',
+  help: {
+    examples: ['get regions'],
+    description: 'Responds with current available US Regions to switch to',
+  },
   requirements: {
     guild: true,
     basic: true,

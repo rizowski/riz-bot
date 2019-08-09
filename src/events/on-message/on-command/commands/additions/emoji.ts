@@ -1,11 +1,13 @@
 import { Command, ActionInput } from '../command';
 
-import { PreconditionError } from '../../errors';
+import { PreconditionError } from '../../../../../errors';
 
 const cmd: Command = {
   title: 'Add Emoji',
-  example: 'add emoji [emojiName] [roles...]',
-  description: 'Add an emoji to the server. defaults to filename if emojiName is not provided',
+  help: {
+    description: 'Add an emoji to the server. defaults to filename if emojiName is not provided',
+    examples: ['add emoji [emojiName] [roles...]'],
+  },
   requirements: {
     guild: true,
     mod: true,
@@ -66,7 +68,7 @@ const cmd: Command = {
   async action({ message, args }: ActionInput) {
     const { attachments, mentions } = message;
     const { url, filename } = attachments.first();
-    const [ name ] = args;
+    const [name] = args;
     const emojiName = name || filename.split('.')[0];
     const roles = mentions.roles;
 

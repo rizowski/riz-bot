@@ -1,6 +1,6 @@
 import ms from 'ms';
 
-import * as math from '../../../utils/math';
+import * as math from '../../../../../../utils/math';
 
 interface PingResponse {
   second: Array<(ms: number) => string>;

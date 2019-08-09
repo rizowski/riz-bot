@@ -1,11 +1,13 @@
 import { Command } from '../command.d';
-import { PreconditionError } from '../../errors';
+import { PreconditionError } from '../../../../../errors';
 import { features } from '../roles';
 
 const cmd: Command = {
   title: 'Join',
-  description: 'Allows you to see the requested category. ex) join admin',
-  example: 'join <feature>',
+  help: {
+    description: 'Allows you to see the requested category. ex) join admin',
+    examples: ['join <feature>'],
+  },
   requirements: {
     guild: true,
   },

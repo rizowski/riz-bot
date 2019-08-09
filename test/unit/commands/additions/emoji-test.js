@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { default: command } = require('../../../../src/commands/additions/emoji');
+const { default: command } = require('../../../../src/events/on-message/on-command/commands/additions/emoji');
 
 describe('add:emoji', () => {
   describe('trigger', () => {

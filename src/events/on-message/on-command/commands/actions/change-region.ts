@@ -1,10 +1,10 @@
 import { VoiceRegion } from 'discord.js';
-import { Command } from '../command';
-import { Embedable } from '../../responses';
+import { Command } from '../command.d';
+import { Embedable } from '../../../../../responses.d';
 
-import logger from '../../logger';
-import emoji from '../../emojis';
-import { CommandError } from '../../errors';
+import logger from '../../../../../logger';
+import emoji from '../../../../../emojis';
+import { CommandError } from '../../../../../errors';
 
 interface CreatePendingInput {
   theChosenOne: VoiceRegion;
@@ -105,8 +105,10 @@ function createPending(ping: number, { theChosenOne, oldRegion = {} }: CreatePen
 
 const cmd: Command = {
   title: 'Change Server Region',
-  example: 'change regions',
-  description: 'Change the region of the server.',
+  help: {
+    description: 'Change the region of the server',
+    examples: ['change regions'],
+  },
   requirements: {
     guild: true,
     mod: true,
@@ -127,7 +129,7 @@ const cmd: Command = {
     const [[, theChosenOne]] = sorted;
     const oldPing = Math.floor(client.ping);
 
-    //@ts-ignore
+    // @ts-ignore
     await message.channel.send(createPending(oldPing, { theChosenOne, oldRegion }));
 
     try {
@@ -139,7 +141,7 @@ const cmd: Command = {
 
       const err = new CommandError({
         title: 'Failed to change region',
-        command: cmd.example,
+        command: cmd.help.examples[0],
         reason: error.message,
       });
 

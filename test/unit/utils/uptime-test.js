@@ -1,5 +1,5 @@
 // Const { expect } = require('chai');
-const uptime = require('../../../src/commands/informational/uptime/uptime');
+const uptime = require('../../../src/events/on-message/on-command/commands/informational/uptime/uptime');
 
 describe('unit: uptime responses', () => {
   const times = {

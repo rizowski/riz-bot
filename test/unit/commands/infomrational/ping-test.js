@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { default: command } = require('../../../../src/commands/informational/ping');
+const { default: command } = require('../../../../src/events/on-message/on-command/commands/informational/ping');
 
 describe('your:ping', () => {
   describe('trigger', () => {

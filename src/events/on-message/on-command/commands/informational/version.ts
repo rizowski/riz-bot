@@ -1,10 +1,12 @@
-import { Command } from '../command';
-import pkg from '../../../package.json';
+import { Command } from '../command.d';
+import pkg from '../../../../../../package.json';
 
 const cmd: Command = {
   title: 'Get My Version',
-  example: 'your version',
-  description: "I'll spill the beans and give you my version.",
+  help: {
+    examples: ['your version'],
+    description: "I'll spill the beans and give you my version.",
+  },
   requirements: {
     basic: true,
   },
