@@ -4,6 +4,7 @@ interface Emoji {
   nay: string;
   star: string;
   gKappa: string;
+  gZack: string;
 }
 
 const emoji = {
@@ -12,6 +13,7 @@ const emoji = {
   nay: '<:nay:379727005224140800>',
   star: ':star:',
   gKappa: ':gkappa:423160844650676244',
+  gZack: ':gzack:610223670123560970',
 };
 
 export default emoji as Emoji;

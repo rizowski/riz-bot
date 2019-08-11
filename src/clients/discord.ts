@@ -1,4 +1,4 @@
-//@ts-ignore
+// @ts-ignore
 import { discord as config } from 'config';
 import { Client, Message } from 'discord.js';
 import { Observable } from 'rxjs';

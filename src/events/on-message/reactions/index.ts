@@ -1,20 +1,15 @@
+import { Message } from 'discord.js';
 import { percentage } from '../../../utils/math';
 import emoji from '../../../emojis';
 
-function getReaction(): string | null {
+export async function subscribe(msg: Message): Promise<void> {
   const percent = percentage();
 
   if (percent <= 0.001) {
-    return emoji.gKappa;
+    await msg.react(emoji.gKappa);
   }
 
-  return null;
-}
-
-export async function subscribe(msg: any): Promise<void> {
-  const reaction = getReaction();
-
-  if (reaction) {
-    await msg.react(reaction);
+  if (msg.author.id === '108568431053246464' && percent <= 0.01) {
+    await msg.react(emoji.gZack);
   }
 }
