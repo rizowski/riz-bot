@@ -1,6 +1,8 @@
-import { Command, ActionInput } from '../command';
+import snake from 'lodash.snakecase';
+import { Command, ActionInput } from '../command.d';
 
 import { PreconditionError } from '../../../../../errors';
+import logger from '../../../../../logger';
 
 const cmd: Command = {
   title: 'Add Emoji',
@@ -67,27 +69,35 @@ const cmd: Command = {
   ],
   async action({ message, args }: ActionInput) {
     const { attachments, mentions } = message;
-    const { url, filename } = attachments.first();
+    const attachment = attachments.first();
+    const { url, filename } = attachment;
     const [name] = args;
     const emojiName = name || filename.split('.')[0];
-    const roles = mentions.roles;
+    const { roles } = mentions;
 
-    const result = await message.guild.createEmoji(
-      url,
-      emojiName,
-      roles,
-      // @ts-ignore
-      `I blame ${message.author.username} in ${message.channel.name}`
-    );
+    logger.info({ emojiName, filename });
 
-    const createEmoji = message.guild.emojis.get(result.id);
+    try {
+      const result = await message.guild.createEmoji(
+        url,
+        snake(emojiName),
+        roles,
+        // @ts-ignore
+        `I blame ${message.author.username} in ${message.channel.name}`
+      );
 
-    if (!createEmoji) {
-      await message.channel.send(`Can't find the emoji I just created... Maybe you can?`);
-      return;
+      const createEmoji = message.guild.emojis.get(result.id);
+
+      if (!createEmoji) {
+        await message.channel.send(`Can't find the emoji I just created... Maybe you can?`);
+        return;
+      }
+
+      await message.react(createEmoji);
+    } catch (error) {
+      logger.error(error);
+      throw new Error(error);
     }
-
-    await message.react(createEmoji);
   },
 };
 
