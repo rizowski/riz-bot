@@ -100,16 +100,32 @@ const cmd: Command = {
           id: message.guild.defaultRole.id,
           deny: ['VIEW_CHANNEL'],
         },
+        {
+          id: foundRole.id,
+          allow: [
+            'VIEW_CHANNEL',
+            'SEND_MESSAGES',
+            'EMBED_LINKS',
+            'ATTACH_FILES',
+            'READ_MESSAGE_HISTORY',
+            'USE_EXTERNAL_EMOJIS',
+          ],
+        },
       ],
     });
 
     await message.guild.createChannel(group, {
       type: 'voice',
       parent,
+      bitrate: 128000,
       permissionOverwrites: [
         {
           id: message.guild.defaultRole.id,
           deny: ['VIEW_CHANNEL'],
+        },
+        {
+          id: foundRole.id,
+          allow: ['VIEW_CHANNEL', 'CONNECT', 'SPEAK'],
         },
       ],
     });
