@@ -10,7 +10,8 @@ const cmd: Command = {
     description: 'Removes a or multiple roles from yourself',
   },
   requirements: {
-    basic: true,
+    guild: true,
+    mod: true,
   },
   conditions: [
     {

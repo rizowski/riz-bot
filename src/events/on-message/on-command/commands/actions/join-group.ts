@@ -1,46 +1,64 @@
+import { GuildChannel } from 'discord.js';
+import wuzzy from 'wuzzy';
 import { Command } from '../command.d';
 import { PreconditionError } from '../../../../../errors';
-import { features } from '../roles';
 
 const cmd: Command = {
-  title: 'Join',
+  title: 'Join Group',
   help: {
-    description: 'Allows you to see the requested category. ex) join admin',
-    examples: ['join <feature>'],
+    description: 'Allows you to join a gaming group',
+    examples: ['join group <name>'],
   },
   requirements: {
     guild: true,
+    basic: true,
   },
   conditions: [
     {
       name: 'specified arguments',
       condition(message, client, args) {
         if (args.length === 0) {
-          return new PreconditionError({ reason: 'Must specify feature name' });
+          return new PreconditionError({ reason: 'Must specify group name' });
         }
       },
     },
     {
-      name: 'is a feature',
-      condition(message) {
-        const result = features.some((f) => {
-          return f.match.test(message.content);
-        });
+      name: 'is a group',
+      condition(message, client, args) {
+        const groupName = args[0].toLowerCase();
+        const result = message.guild.channels
+          .reduce((acc, thing: GuildChannel): string[] => {
+            if (thing.type === 'category' && thing.name.startsWith('Group:')) {
+              acc.push(thing.name.replace('Group: ', '').toLowerCase());
+            }
+
+            return acc;
+          }, [])
+          .map((name) => {
+            const result = wuzzy.jaccard(groupName, name);
+
+            return { name, groupName, prob: result };
+          })
+          .find((result) => {
+            return result.prob > 0.9;
+          });
 
         if (!result) {
-          return new PreconditionError({ reason: 'Feature not available.' });
+          return new PreconditionError({
+            reason: `I could not find the group [${groupName}] you want to join with confidence. Need a confidence level of 90 or higher. Try retyping the name a different way.`,
+          });
         }
       },
     },
     {
-      name: 'already have permission',
-      condition(message) {
-        const result = features.some((f) => {
-          return message.member.roles.has(f.roleId);
+      name: 'role exists',
+      condition(message, client, args) {
+        const role = message.guild.roles.find((r) => {
+          return r.name.replace('Group: ', '').toLowerCase() === args[0].toLowerCase();
         });
 
-        if (result) {
-          return new PreconditionError({ reason: 'Role is already added' });
+        if (!role) {
+          return new PreconditionError({ reason: `Count not find role ${args[0]}` });
         }
       },
     },
@@ -49,16 +67,12 @@ const cmd: Command = {
   trigger(content) {
     return cmd.regex.test(content);
   },
-  async action({ message }) {
-    const found = features.find((f) => f.match.test(message.content));
+  async action({ message, args }) {
+    const role = message.guild.roles.find((r) => {
+      return r.name.replace('Group: ', '').toLowerCase() === args[0].toLowerCase();
+    });
 
-    if (!found) {
-      return;
-    }
-
-    const { roleId } = found;
-
-    await message.member.addRoles([roleId]);
+    await message.member.addRoles([role], 'User requested');
     await message.react('👍');
   },
 };

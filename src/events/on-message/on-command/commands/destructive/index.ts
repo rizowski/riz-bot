@@ -1,3 +1,4 @@
-import role from './role';
+// import role from './role';
+import leaveGroup from './leave-group';
 
-export default [role];
+export default [leaveGroup];

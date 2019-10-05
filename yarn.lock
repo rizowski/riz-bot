@@ -5259,6 +5259,13 @@ ws@^6.0.0:
   dependencies:
     async-limiter "~1.0.0"
 
+wuzzy@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/wuzzy/-/wuzzy-0.1.4.tgz#f2ea42c5c5a216ef7dc68158356a7d5f84432102"
+  integrity sha512-0I20vx7xWb+fZ1XKw54EhZukVsH3rRKnwtdu+MCb2nHITeypPZRr9Y1VOFdeZu48YvzxO33ReKoyIP5IG+WaOw==
+  dependencies:
+    lodash "^4.17.15"
+
 xdg-basedir@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/xdg-basedir/-/xdg-basedir-3.0.0.tgz#496b2cc109eca8dbacfe2dc72b603c17c5870ad4"

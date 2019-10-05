@@ -14,6 +14,11 @@ export async function subscribe(message: any) {
   } catch (error) {
     logger.error(error);
 
+    if (error.serialize) {
+      await message.channel.send(error.serialize());
+      return;
+    }
+
     const err = new GeneralError({
       title: 'Failed to run command',
       reason: `I suck: ${error.message}`,

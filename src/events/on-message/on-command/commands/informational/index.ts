@@ -3,5 +3,6 @@ import stats from './stats';
 import ping from './ping';
 import uptime from './uptime';
 import version from './version';
+import list from './list';
 
-export default [uptime, regions, stats, ping, version];
+export default [list, uptime, regions, stats, ping, version];
