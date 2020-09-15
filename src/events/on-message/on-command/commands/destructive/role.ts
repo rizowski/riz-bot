@@ -72,7 +72,7 @@ const cmd: Command = {
     const rolesToRemove = [...mentionedRoles, ...roleNames];
 
     if (rolesToRemove.length > 0) {
-      // @ts-ignore
+      // @ts-expect-error
       await user.removeRoles(rolesToRemove, 'User Requested');
       await message.react('👍');
       return;

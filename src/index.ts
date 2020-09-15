@@ -11,9 +11,9 @@ ready.subscribe(() => {
   });
 });
 
-// @ts-ignore
+// @ts-expect-error
 debug.subscribe(logger.debug);
-// @ts-ignore
+// @ts-expect-error
 warn.subscribe(logger.warn);
 
 login.subscribe(async () => {

@@ -19,7 +19,7 @@ const cmd: Command = {
   async action({ client, message }) {
     message.channel.startTyping();
     const regions = await client.fetchVoiceRegions();
-    // @ts-ignore
+    // @ts-expect-error
     const sorted = regions.filter((r) => r.name.startsWith('US')).sort((a, b) => b.optimal);
 
     const fields = sorted.map((data) => {

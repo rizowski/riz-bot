@@ -16,8 +16,8 @@ interface CurrentRequirement {
   mod: Requirement;
 }
 
-function getMissingReqs(cmdReq: CommandRequirement, currentReqs: CurrentRequirement | any): Requirement[] {
-  return Object.entries(cmdReq).reduce((acc: Requirement[], [key, value]: [string, boolean]) => {
+function getMissingReqs(cmdRequest: CommandRequirement, currentReqs: CurrentRequirement | any): Requirement[] {
+  return Object.entries(cmdRequest).reduce((acc: Requirement[], [key, value]: [string, boolean]) => {
     const current: Requirement = currentReqs[key];
 
     if (current.value !== value) {
@@ -83,18 +83,15 @@ export async function doAction(content: string, client: Client, message: Message
   const [command] = executableCommands;
   logger.debug({ title: command.title });
   const { requirements } = command;
-  const [missingReq] = getMissingReqs(requirements, currentReqs);
+  const [missingRequest] = getMissingReqs(requirements, currentReqs);
 
-  if (missingReq) {
-    const embeds = missingReq.error.serialize();
+  if (missingRequest) {
+    const embeds = missingRequest.error.serialize();
 
     return message.channel.send(embeds);
   }
 
-  const args = content
-    .replace(command.regex, '')
-    .split(' ')
-    .filter(Boolean);
+  const args = content.replace(command.regex, '').split(' ').filter(Boolean);
 
   const error = getErrors(command.conditions, message, client, args);
 

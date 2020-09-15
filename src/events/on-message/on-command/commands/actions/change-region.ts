@@ -70,7 +70,7 @@ function createSuccess({ newPing, oldPing }: PingInput, region: VoiceRegion): Em
   };
 }
 
-// @ts-ignore
+// @ts-expect-error
 function createPending(ping: number, { theChosenOne, oldRegion = {} }: CreatePendingInput): Embedable {
   const defaultLocation = 'Earth';
 
@@ -121,15 +121,15 @@ const cmd: Command = {
   async action({ client, message }) {
     message.channel.startTyping();
     const regions = await client.fetchVoiceRegions();
-    const oldRegion = regions.get(message.guild.region) || {};
+    const oldRegion = regions.get(message.guild.region) ?? {};
     const sorted = regions
       .filter((r) => r.name.startsWith('US') && r.id !== message.guild.region)
-      // @ts-ignore
+      // @ts-expect-error
       .sort((a, b) => b.optimal);
     const [[, theChosenOne]] = sorted;
     const oldPing = Math.floor(client.ping);
 
-    // @ts-ignore
+    // @ts-expect-error
     await message.channel.send(createPending(oldPing, { theChosenOne, oldRegion }));
 
     try {

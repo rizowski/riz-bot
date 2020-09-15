@@ -68,7 +68,7 @@ const cmd: Command = {
     },
   ],
   async action({ message, args }: ActionInput) {
-    const { attachments, mentions } = message;
+    const { attachments, mentions, channel } = message;
     const attachment = attachments.first();
     const { url, filename } = attachment;
     const [name] = args;
@@ -82,8 +82,8 @@ const cmd: Command = {
         url,
         snake(emojiName),
         roles,
-        // @ts-ignore
-        `I blame ${message.author.username} in ${message.channel.name}`
+        // @ts-expect-error
+        `I blame ${message.author.username} in ${channel.name}`
       );
 
       const createEmoji = message.guild.emojis.get(result.id);

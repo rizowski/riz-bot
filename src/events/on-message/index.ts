@@ -10,7 +10,7 @@ export function onMessage(message: Observable<Message>): Observable<Message> {
   const command = message
     .throttleTime(750)
     .filter((message) => {
-      // @ts-ignore
+      // @ts-expect-error
       return message.content.startsWith(config.token) && !message.author.bot && !message.author.lastMessage.system;
     })
     .flatMap(commands.subscribe);

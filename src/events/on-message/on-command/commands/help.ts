@@ -37,7 +37,7 @@ function createHelp(pms: Permissions): HelpText | undefined {
       }
 
       return {
-        // @ts-ignore
+        // @ts-expect-error
         name: `${config.token}${cmd.help.examples[0]}`,
         value: cmd.help.description,
         inline: true,

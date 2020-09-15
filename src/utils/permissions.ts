@@ -10,7 +10,7 @@ export interface Permissions {
 const rizowskiId = '100758264047747072';
 
 export function isInGuild(message: Message): boolean {
-  return message.guild && message.guild.available;
+  return message.guild?.available;
 }
 
 export function hasModPermissions(message: Message): boolean {

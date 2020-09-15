@@ -48,9 +48,9 @@ const cmd: Command = {
           throw new PreconditionError({
             reason: `There is a ${result.prob * 100}% chance there is a group with the name of ${result.groupName}.`,
             details: [
-              // @ts-ignore
+              // @ts-expect-error
               { title: 'suggestion', description: `${config.token}list groups`, inline: true },
-              // @ts-ignore
+              // @ts-expect-error
               { title: 'suggestion 2', description: `${config.token}join group ${groupName}`, inline: true },
             ],
           });

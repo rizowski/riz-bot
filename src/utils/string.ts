@@ -1,3 +1,3 @@
-export function cleanDecimals(str = ''): string {
-  return str.split('.')[0];
+export function cleanDecimals(string = ''): string {
+  return string.split('.')[0];
 }

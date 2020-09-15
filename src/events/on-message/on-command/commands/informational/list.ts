@@ -29,14 +29,16 @@ const cmd: Command = {
     await message.channel.send({
       embed: {
         title: 'Available Groups:',
-        fields: groups.map((g: string): object => {
-          return {
-            name: `${g}`,
-            // @ts-ignore
-            value: `${config.token}join group ${g}`,
-            inline: true,
-          };
-        }),
+        fields: groups.map(
+          (g: string): Record<string, unknown> => {
+            return {
+              name: `${g}`,
+              // @ts-expect-error
+              value: `${config.token}join group ${g}`,
+              inline: true,
+            };
+          }
+        ),
       },
     });
   },

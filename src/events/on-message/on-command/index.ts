@@ -4,9 +4,8 @@ import { client } from '../../../clients/discord';
 import { GeneralError } from '../../../errors';
 import { doAction } from './commands';
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export async function subscribe(message: any) {
-  // @ts-ignore
+  // @ts-expect-error
   const content = message.content.replace(config.token, '');
 
   try {
@@ -22,7 +21,7 @@ export async function subscribe(message: any) {
     const err = new GeneralError({
       title: 'Failed to run command',
       reason: `I suck: ${error.message}`,
-      // @ts-ignore
+      // @ts-expect-error
       details: [{ title: 'command', description: `${config.token}${content}` }],
     });
 
@@ -34,7 +33,6 @@ export async function subscribe(message: any) {
     command: content,
     username: message.author.username,
     discriminator: message.author.discriminator,
-    // @ts-ignore
     channel: message.channel.name || 'direct',
   });
 

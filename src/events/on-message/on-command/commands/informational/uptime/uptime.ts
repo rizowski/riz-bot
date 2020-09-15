@@ -60,7 +60,7 @@ const responses: PingResponse | any = {
 export default (milli: number) => {
   const pretty = ms(milli, { long: true });
   const [number, duration] = pretty.split(' ');
-  const isDeath = duration === 'days' && parseInt(number, 10) > 30;
+  const isDeath = duration === 'days' && Number.parseInt(number, 10) > 30;
   const respCategory = isDeath ? death : responses[duration];
   const rand = math.createRandMax(respCategory.length);
   const response = respCategory[rand];

@@ -7,9 +7,7 @@ describe('unit: math', () => {
       for (let i = 0; i < 1000; i++) {
         const result = math.createRandRange(1, 10);
 
-        expect(result)
-          .to.be.below(11)
-          .and.above(0);
+        expect(result).to.be.below(11).and.above(0);
       }
     });
   });
@@ -19,9 +17,7 @@ describe('unit: math', () => {
       for (let i = 0; i < 1000; i++) {
         const result = math.createRandMax(10);
 
-        expect(result)
-          .to.be.below(10)
-          .and.above(-1);
+        expect(result).to.be.below(10).and.above(-1);
       }
     });
   });

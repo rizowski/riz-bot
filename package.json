@@ -11,8 +11,8 @@
     "local": "nodemon . | pino-pretty",
     "mocha": "NODE_ENV=${NODE_ENV:-test} mocha -r ts-node/register",
     "start": "node .",
-    "test": "npm run mocha -- --opts ./test/mocha.opts",
-    "unit:test": "npm run mocha -- --opts ./test/unit-mocha.opts"
+    "test": "npm run mocha",
+    "unit:test": "npm run mocha"
   },
   "author": "Colten Rouska",
   "license": "MIT",
@@ -26,6 +26,7 @@
   },
   "xo": {
     "prettier": true,
+    "space": true,
     "plugins": [
       "unicorn"
     ],
@@ -35,28 +36,21 @@
         "envs": [
           "mocha"
         ]
-      },
-      {
-        "files": "src/**/*.ts",
-        "extends": "xo-typescript",
-        "extensions": [
-          "ts"
-        ],
-        "rules": {
-          "@typescript-eslint/indent": [
-            "error",
-            2,
-            {
-              "SwitchCase": 1
-            }
-          ]
-        }
       }
-    ]
+    ],
+    "rules": {
+      "unicorn/no-reduce": "off",
+      "@typescript-eslint/restrict-template-expressions": "off",
+      "unicorn/no-fn-reference-in-iterator": "off",
+      "@typescript-eslint/no-empty-function": "off",
+      "unicorn/prevent-abbreviations": "off",
+      "import/no-anonymous-default-export": "off",
+      "@typescript-eslint/no-var-requires": "off"
+    }
   },
   "lint-staged": {
     "*.js": [
-      "npm run lint:fix -- --env mocha",
+      "npm run lint:fix",
       "git add"
     ],
     "*.{js,json,css,md,ts}": [
@@ -65,28 +59,28 @@
     ]
   },
   "devDependencies": {
-    "@types/config": "^0.0.34",
+    "@tsconfig/node12": "^1.0.7",
+    "@types/config": "^0.0.36",
     "@types/lodash.find": "^4.6.6",
     "@types/lodash.flatten": "^4.4.6",
     "@types/lodash.snakecase": "^4.1.6",
-    "@types/ms": "^0.7.30",
-    "@types/pino": "^5.8.7",
-    "@typescript-eslint/eslint-plugin": "^1.13.0",
-    "@typescript-eslint/parser": "^1.13.0",
-    "chai": "^4.1.2",
-    "eslint": "^6.1.0",
-    "eslint-config-xo-typescript": "^0.16.0",
-    "husky": "^3.0.3",
-    "lint-staged": "^9.2.1",
-    "mocha": "^6.2.0",
-    "nodemon": "^1.18.11",
-    "nyc": "^14.0.0",
-    "pino-pretty": "^3.0.0",
-    "prettier": "^1.18.2",
-    "sinon": "^7.4.1",
-    "ts-node": "^8.3.0",
-    "typescript": "^3.5.3",
-    "xo": "^0.24.0"
+    "@types/ms": "^0.7.31",
+    "@types/pino": "^6.3.0",
+    "chai": "^4.2.0",
+    "eslint": "^7.8.1",
+    "eslint-config-xo-typescript": "^0.32.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "husky": "^4.3.0",
+    "lint-staged": "^10.3.0",
+    "mocha": "^8.1.3",
+    "nodemon": "^2.0.4",
+    "nyc": "^15.1.0",
+    "pino-pretty": "^4.2.1",
+    "prettier": "^2.1.1",
+    "sinon": "^9.0.3",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.2",
+    "xo": "^0.33.1"
   },
   "dependencies": {
     "axios": "^0.19.0",

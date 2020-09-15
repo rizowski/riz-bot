@@ -27,7 +27,7 @@ export class GeneralError extends Error implements ErrorContract {
     super(input.reason);
     Error.captureStackTrace(this, this.constructor);
 
-    this.title = input.title || 'General Error';
+    this.title = input.title ?? 'General Error';
     this.data = input;
   }
 
@@ -38,12 +38,8 @@ export class GeneralError extends Error implements ErrorContract {
       embed: {
         title: this.title,
         description,
-        color: color || 12124160,
-        fields:
-          details &&
-          details.map((d) => {
-            return { name: d.title, value: d.description, inline: d.inline };
-          }),
+        color: color ?? 12124160,
+        fields: details?.map((d) => ({ name: d.title, value: d.description, inline: d.inline })),
       },
     };
   }

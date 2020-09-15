@@ -1,4 +1,4 @@
-// @ts-ignore
+// @ts-expect-error
 import { discord as config } from 'config';
 import { Client, Message } from 'discord.js';
 import { Observable } from 'rxjs';
@@ -12,9 +12,9 @@ export const message: Observable<Message> = Observable.fromEvent(client, 'messag
 export const error = Observable.fromEvent(client, 'error');
 export const warn = Observable.fromEvent(client, 'warn');
 
-function shutdown(): void {
+async function shutdown(): Promise<void> {
   client.removeAllListeners();
-  client.destroy();
+  await client.destroy();
 }
 
 async function internalLogin(): Promise<void> {
