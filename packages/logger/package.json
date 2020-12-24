@@ -1,0 +1,7 @@
+{
+  "name": "@local/logger",
+  "version": "1.0.0",
+  "dependencies": {
+    "pino": "^6.7.0"
+  }
+}
