@@ -1,6 +1,7 @@
 {
   "name": "riz-bot",
-  "version": "1.6.1",
+  "version": "2.0.0",
+  "private": true,
   "description": "Rizowski's discord server bot",
   "main": "src/index.js",
   "workspaces": [
@@ -11,13 +12,12 @@
     "lint:fix": "npm run lint -- --fix",
     "lint": "xo . --quiet",
     "local": "nodemon . | pino-pretty",
-    "mocha": "NODE_ENV=${NODE_ENV:-test} mocha -r ts-node/register",
     "start": "node ."
   },
   "author": "Colten Rouska",
   "license": "MIT",
   "engines": {
-    "node": ">=10"
+    "node": ">=14"
   },
   "husky": {
     "hooks": {
@@ -32,12 +32,9 @@
     ],
     "rules": {
       "unicorn/no-reduce": "off",
-      "@typescript-eslint/restrict-template-expressions": "off",
       "unicorn/no-fn-reference-in-iterator": "off",
-      "@typescript-eslint/no-empty-function": "off",
       "unicorn/prevent-abbreviations": "off",
-      "import/no-anonymous-default-export": "off",
-      "@typescript-eslint/no-var-requires": "off"
+      "import/no-anonymous-default-export": "off"
     }
   },
   "lint-staged": {
@@ -51,20 +48,19 @@
     ]
   },
   "devDependencies": {
-    "eslint-config-xo-typescript": "^0.32.0",
-    "eslint-plugin-prettier": "^3.1.4",
-    "husky": "^4.3.0",
-    "lint-staged": "^10.3.0",
-    "nodemon": "^2.0.4",
-    "pino-pretty": "^4.2.1",
-    "prettier": "^2.1.2",
+    "eslint-plugin-prettier": "^3.3.0",
+    "husky": "^4.3.6",
+    "lint-staged": "^10.5.3",
+    "nodemon": "^2.0.6",
+    "pino-pretty": "^4.3.0",
+    "prettier": "^2.2.1",
     "xo": "^0.33.1"
   },
   "dependencies": {
     "@local/discord": "workspace:packages/discord",
     "@local/logger": "workspace:packages/logger",
-    "config": "^3.3.1",
-    "discord.js": "^11.3.2",
-    "pino": "^6.6.1"
+    "config": "^3.3.3",
+    "discord.js": "^12.5.1",
+    "pino": "^6.8.0"
   }
 }

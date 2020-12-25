@@ -3,8 +3,6 @@ const cmds = require('./all');
 exports.run = async (data) => {
   const cmd = cmds.find((cmd) => cmd.trigger(data.data));
 
-  console.log(cmd);
-
   if (!cmd) {
     const options = data.data.options
       ?.map((o) => {
