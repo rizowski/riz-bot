@@ -1,46 +1,4 @@
 const cmd = {
-  // conditions: [
-  //   {
-  //     name: 'specified arguments',
-  //     condition(message, client, args) {
-  //       if (args.length === 0) {
-  //         return new PreconditionError({ reason: 'Must specify group name' });
-  //       }
-  //     },
-  //   },
-  //   {
-  //     name: 'group exists',
-  //     condition(message, client, args) {
-  //       const groupName = args[0].toLowerCase();
-  //       const result = message.guild.channels
-  //         .reduce((acc, thing) => {
-  //           if (thing.type === 'category' && thing.name.startsWith(prefix)) {
-  //             acc.push(thing.name.replace(`${prefix} `, '').toLowerCase());
-  //           }
-
-  //           return acc;
-  //         }, [])
-  //         .map((name) => {
-  //           const result = wuzzy.jaccard(groupName, name);
-
-  //           return { name, groupName, prob: result };
-  //         })
-  //         .find((result) => {
-  //           return result.prob > 0.9;
-  //         });
-
-  //       if (result) {
-  //         throw new PreconditionError({
-  //           reason: `There is a ${result.prob * 100}% chance there is a group with the name of ${result.groupName}.`,
-  //           details: [
-  //             { title: 'suggestion', description: `${config.token}list groups`, inline: true },
-  //             { title: 'suggestion 2', description: `${config.token}join group ${groupName}`, inline: true },
-  //           ],
-  //         });
-  //       }
-  //     },
-  //   },
-  // ],
   trigger(data) {
     return data.name === 'group' && data.options?.[0].name === 'create';
   },
