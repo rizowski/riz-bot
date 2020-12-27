@@ -1,1 +1,1 @@
-module.exports = { cmds: [require('./list'), require('./join'), require('./leave'), require('./create')] };
+module.exports = { request: {}, cmds: [require('./list'), require('./join'), require('./leave'), require('./create')] };
