@@ -1,7 +1,7 @@
 const logger = require('@local/logger');
 
 function createSuccess(region) {
-  const color = region.optimal ? 16312092 : 47377;
+  const color = region.optimal ? 47377 : 16312092;
 
   return {
     embed: {
