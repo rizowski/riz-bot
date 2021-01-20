@@ -38,7 +38,6 @@ const cmd = {
     }
 
     await member.roles.remove([roleId], 'User requested');
-    await channel.send(`Removed from \`${role.name.replace(`${prefix}`, '')}\`.`);
   },
 };
 

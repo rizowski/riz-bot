@@ -3,5 +3,8 @@
   "version": "1.0.0",
   "dependencies": {
     "pino": "^6.7.0"
+  },
+  "devDependencies": {
+    "pino-pretty": "^4.3.0"
   }
 }

@@ -2,10 +2,6 @@
   "editor.defaultFormatter": "samverschueren.linter-xo",
   "[javascript]": {
     "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
-      "source.fixAll": true
-    },
     // "editor.defaultFormatter": "samverschueren.linter-xo"
   },
-  "eslint.enable": false,
 }

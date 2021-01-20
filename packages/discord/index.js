@@ -70,16 +70,17 @@ exports.onInteraction = (callback) => {
       client.ws.removeListener('INTERACTION_CREATE', wsListener);
     }
 
+    logger.info('NATIVE SUPPORT');
     removed = true;
 
     callback(data, client);
   });
 };
 
-exports.onCommand = () => {
-  //   client.on('message', (msg) => {
-  //     if (msg.content.startsWith('!') && !msg.author.bot && msg.guild) {
-  //       callback({ ...msg, content: msg.content.replace('!', '') }, client);
-  //     }
-  //   });
+exports.onCommand = (callback) => {
+  client.on('message', (msg) => {
+    if (msg.content.startsWith('!') && !msg.author.bot && msg.guild) {
+      callback(msg, msg.content.replace('!', ''), client);
+    }
+  });
 };

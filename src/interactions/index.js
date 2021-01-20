@@ -9,17 +9,13 @@ exports.run = async (data, client) => {
   const cmd = cmds.find((cmd) => cmd.trigger(data.data));
 
   if (!cmd) {
-    const options = data.data.options
-      ?.map((o) => {
-        return ` ${o.name}`;
-      })
-      .join(' ');
+    const options = data.data.options?.map((o) => ` ${o.name}`).join(' ');
 
     await data.channel.send(`Command \`/${data.data.name}${options}\` has not been implemented yet.`);
   }
 
   try {
-    await cmd.action(data);
+    await cmd.action(data, client);
   } catch (error) {
     console.error(error);
   }

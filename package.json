@@ -1,6 +1,6 @@
 {
   "name": "riz-bot",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
   "description": "Rizowski's discord server bot",
   "main": "src/index.js",
@@ -11,7 +11,7 @@
   "scripts": {
     "lint:fix": "npm run lint -- --fix",
     "lint": "xo . --quiet",
-    "local": "nodemon . | pino-pretty",
+    "local": "STAGE=local nodemon .",
     "start": "node ."
   },
   "author": "Colten Rouska",
@@ -48,19 +48,19 @@
     ]
   },
   "devDependencies": {
+    "eslint": "^7.16.0",
     "eslint-plugin-prettier": "^3.3.0",
     "husky": "^4.3.6",
     "lint-staged": "^10.5.3",
     "nodemon": "^2.0.6",
-    "pino-pretty": "^4.3.0",
     "prettier": "^2.2.1",
     "xo": "^0.33.1"
   },
   "dependencies": {
     "@local/discord": "workspace:packages/discord",
     "@local/logger": "workspace:packages/logger",
+    "@local/responses": "workspace:packages/responses",
     "config": "^3.3.3",
-    "discord.js": "^12.5.1",
-    "pino": "^6.8.0"
+    "lodash.snakecase": "^4.1.1"
   }
 }
