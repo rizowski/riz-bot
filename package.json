@@ -1,23 +1,23 @@
 {
   "name": "riz-bot",
-  "version": "1.6.1",
+  "version": "2.1.0",
+  "private": true,
   "description": "Rizowski's discord server bot",
   "main": "src/index.js",
+  "workspaces": [
+    "packages/*",
+    "."
+  ],
   "scripts": {
-    "build": "tsc",
-    "build:watch": "npm run build -- -w",
     "lint:fix": "npm run lint -- --fix",
     "lint": "xo . --quiet",
-    "local": "nodemon . | pino-pretty",
-    "mocha": "NODE_ENV=${NODE_ENV:-test} mocha -r ts-node/register",
-    "start": "node .",
-    "test": "npm run mocha -- --opts ./test/mocha.opts",
-    "unit:test": "npm run mocha -- --opts ./test/unit-mocha.opts"
+    "local": "STAGE=local nodemon .",
+    "start": "node ."
   },
   "author": "Colten Rouska",
   "license": "MIT",
   "engines": {
-    "node": ">=10"
+    "node": ">=14"
   },
   "husky": {
     "hooks": {
@@ -26,37 +26,20 @@
   },
   "xo": {
     "prettier": true,
+    "space": true,
     "plugins": [
       "unicorn"
     ],
-    "overrides": [
-      {
-        "files": "test/**/*.js",
-        "envs": [
-          "mocha"
-        ]
-      },
-      {
-        "files": "src/**/*.ts",
-        "extends": "xo-typescript",
-        "extensions": [
-          "ts"
-        ],
-        "rules": {
-          "@typescript-eslint/indent": [
-            "error",
-            2,
-            {
-              "SwitchCase": 1
-            }
-          ]
-        }
-      }
-    ]
+    "rules": {
+      "unicorn/no-reduce": "off",
+      "unicorn/no-fn-reference-in-iterator": "off",
+      "unicorn/prevent-abbreviations": "off",
+      "import/no-anonymous-default-export": "off"
+    }
   },
   "lint-staged": {
     "*.js": [
-      "npm run lint:fix -- --env mocha",
+      "npm run lint:fix",
       "git add"
     ],
     "*.{js,json,css,md,ts}": [
@@ -65,45 +48,19 @@
     ]
   },
   "devDependencies": {
-    "@types/config": "^0.0.34",
-    "@types/lodash.find": "^4.6.6",
-    "@types/lodash.flatten": "^4.4.6",
-    "@types/lodash.snakecase": "^4.1.6",
-    "@types/ms": "^0.7.30",
-    "@types/pino": "^5.8.7",
-    "@typescript-eslint/eslint-plugin": "^1.13.0",
-    "@typescript-eslint/parser": "^1.13.0",
-    "chai": "^4.1.2",
-    "eslint": "^6.1.0",
-    "eslint-config-xo-typescript": "^0.16.0",
-    "husky": "^3.0.3",
-    "lint-staged": "^9.2.1",
-    "mocha": "^6.2.0",
-    "nodemon": "^1.18.11",
-    "nyc": "^14.0.0",
-    "pino-pretty": "^3.0.0",
-    "prettier": "^1.18.2",
-    "sinon": "^7.4.1",
-    "ts-node": "^8.3.0",
-    "typescript": "^3.5.3",
-    "xo": "^0.24.0"
+    "eslint": "^7.23.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "husky": "^4.3.6",
+    "lint-staged": "^10.5.4",
+    "nodemon": "^2.0.7",
+    "prettier": "^2.2.1",
+    "xo": "^0.38.2"
   },
   "dependencies": {
-    "axios": "^0.19.0",
-    "config": "^3.2.2",
-    "debug": "^4.1.1",
-    "discord.js": "^11.3.2",
-    "lodash.camelcase": "^4.3.0",
-    "lodash.defaultsdeep": "^4.6.1",
-    "lodash.find": "^4.6.0",
-    "lodash.flatten": "^4.4.0",
-    "lodash.merge": "^4.6.2",
-    "lodash.set": "^4.3.2",
-    "lodash.snakecase": "^4.1.1",
-    "moment": "^2.24.0",
-    "ms": "^2.1.1",
-    "pino": "^5.13.2",
-    "rxjs": "^5.5.6",
-    "wuzzy": "^0.1.4"
+    "@local/discord": "workspace:packages/discord",
+    "@local/logger": "workspace:packages/logger",
+    "@local/responses": "workspace:packages/responses",
+    "config": "^3.3.6",
+    "lodash.snakecase": "^4.1.1"
   }
 }
