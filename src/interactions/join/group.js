@@ -1,21 +1,16 @@
 const prefix = 'g:';
+const { channelMention } = require('@discordjs/builders');
 
 const cmd = {
   trigger(data) {
-    if (data.name !== 'group') {
-      return false;
-    }
-
-    const [join] = data.options;
-
-    return join.name === 'join';
+    return data.commandName === 'join' && data.options.getSubcommand() === 'group';
   },
-  async action({ data, guild, channel, member }) {
-    const roleId = data.options?.[0]?.options?.[0].value;
-    const role = guild.roles.cache.get(roleId);
+  async action(interaction) {
+    const { guild, member } = interaction;
+    const role = interaction.options.getMentionable('role');
 
     if (!role.name.startsWith(prefix)) {
-      await channel.send({
+      await interaction.editReply({
         embed: {
           title: 'Invalid Role',
           description: `Must specify a role that starts with \`@${prefix}\``,
@@ -26,7 +21,7 @@ const cmd = {
     }
 
     if (!member) {
-      await channel.send({
+      await interaction.editReply({
         embed: {
           title: 'Who are you?',
           description: `I can't seem to place who you are... 👁👄👁`,
@@ -37,19 +32,21 @@ const cmd = {
       return;
     }
 
-    const additional = member.roles.cache.get(roleId)
+    const additional = member.roles.cache.get(role.id)
       ? '\nBTW: you were already in the group according to my data. 😐 awk...'
       : '';
 
     if (!additional) {
-      await member.roles.add([roleId], 'User requested');
+      await member.roles.add([role.id], 'User requested');
     }
 
     const channelName = role.name.replace(`${prefix}`, '').toLowerCase();
 
-    const textChannel = guild.channels.cache.find((c) => c.name === channelName && c.type === 'text');
+    const textChannel = guild.channels.cache.find((c) => c.name === channelName && c.type === 'GUILD_TEXT');
 
     await textChannel.send(`Hey <@${member.id}>! Welcome to the group.${additional}`);
+
+    interaction.editReply({ content: `Successfully joined ${channelMention(textChannel.id)}`, ephemeral: true });
   },
 };
 

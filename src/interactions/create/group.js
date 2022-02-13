@@ -1,28 +1,31 @@
+const { channelMention, roleMention } = require('@discordjs/builders');
+
 const cmd = {
   trigger(data) {
-    return data.name === 'group' && data.options?.[0].name === 'create';
+    return ['create', 'add'].includes(data.commandName) && data.options.getSubcommand() === 'group';
   },
-  async action({ data, guild, member }) {
-    const groupName = data.options?.[0].options?.[0].value;
+  async action(interaction) {
+    const { guild, member } = interaction;
+    const groupName = interaction.options.getString('name');
     const name = `g:${groupName}`;
 
+    guild.roles.create({});
+
     const role = await guild.roles.create({
-      data: {
-        name,
-        color: 'BLUE',
-      },
-      reason: `Group created ${name}`,
+      name,
+      color: 'BLUE',
+      reason: `Group created ${name} by ${member.user.tag}`,
     });
 
     const everyone = guild.roles.resolve('101471536719888384');
 
     const parent = await guild.channels.create(name, {
-      type: 'category',
-      reason: `Group created ${name}`,
+      type: 'GUILD_CATEGORY',
+      reason: `Group created ${name} by ${member.user.tag}`,
     });
 
     const newChannel = await guild.channels.create(groupName, {
-      type: 'text',
+      type: 'GUILD_TEXT',
       parent,
       permissionOverwrites: [
         {
@@ -44,9 +47,9 @@ const cmd = {
     });
 
     await guild.channels.create(groupName, {
-      type: 'voice',
+      type: 'GUILD_VOICE',
       parent,
-      bitrate: 128000,
+      bitrate: 64000,
       permissionOverwrites: [
         {
           id: everyone.id,
@@ -61,7 +64,12 @@ const cmd = {
 
     await member.roles.add(role.id);
 
-    await newChannel.send(`Hey <@${member.id}>! I created this group for you.`);
+    await interaction.editReply({
+      content: `I created this ${channelMention(newChannel.id)} and this ${roleMention(
+        role.id
+      )} for you. You have also already been added to it.`,
+      ephemeral: true,
+    });
   },
 };
 module.exports = cmd;

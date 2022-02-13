@@ -1,7 +1,9 @@
-const { Client } = require('discord.js');
+const { Client, Intents } = require('discord.js');
 const logger = require('@local/logger');
 
-const client = new Client();
+const client = new Client({
+  intents: [Intents.FLAGS.GUILDS],
+});
 
 client.on('ready', () => {
   logger.info({
@@ -46,33 +48,7 @@ Object.entries(interactionTypes).forEach(([k, v]) => {
 });
 
 exports.onInteraction = (callback) => {
-  let removed = false;
-  const wsListener = client.ws.on('INTERACTION_CREATE', async (data) => {
-    const guild = client.guilds?.cache.get(data.guild_id);
-    const channel = client.channels?.cache.get(data.channel_id);
-    const member = await guild?.members.fetch(data.member.user.id);
-
-    const event = {
-      id: data.id,
-      type: interactionTypes[data.type],
-      token: data.token,
-      member,
-      guild,
-      channel,
-      data: data.data,
-    };
-
-    callback(event, client);
-  });
-
   client.on('interactionCreate', (data) => {
-    if (!removed) {
-      client.ws.removeListener('INTERACTION_CREATE', wsListener);
-    }
-
-    logger.info('NATIVE SUPPORT');
-    removed = true;
-
     callback(data, client);
   });
 };

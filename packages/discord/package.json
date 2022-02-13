@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "dependencies": {
     "@local/logger": "workspace:packages/logger",
-    "discord.js": "^12.5.1"
+    "discord.js": "^13.6.0"
   }
 }

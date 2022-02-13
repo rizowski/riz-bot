@@ -1,5 +1,5 @@
 #!/bin/bash
-docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+docker login -u "$DOCKER_USERNAME"
 
-docker build . -t rizowski/riz-bot
+docker build --no-cache . -t rizowski/riz-bot
 docker push rizowski/riz-bot

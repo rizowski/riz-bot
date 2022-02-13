@@ -11,9 +11,13 @@ discord.login(config.discord.token);
 
 discord.onInteraction(async (data, client) => {
   try {
+    if (!data.isCommand()) {
+      return;
+    }
     await interactions.run(data, client);
   } catch (error) {
     console.error(error);
+    await data.reply(`Something failed. ||${error.message}||`);
   }
 });
 

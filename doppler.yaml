@@ -1,0 +1,4 @@
+setup:
+  workspace: personal
+  project: riz-bot
+  config: dev

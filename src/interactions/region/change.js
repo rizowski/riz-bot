@@ -69,7 +69,7 @@ function createPending({ theChosenOne, oldRegion = {} }) {
 
 module.exports = {
   trigger(data) {
-    return data.name === 'region' && data.options?.[0].name === 'optimize';
+    return data.commandName === 'region' && data.options?.[0].name === 'optimize';
   },
   async action({ guild, channel }) {
     const regions = await guild.fetchVoiceRegions();

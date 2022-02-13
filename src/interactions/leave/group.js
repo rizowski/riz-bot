@@ -1,18 +1,13 @@
 const prefix = 'g:';
+const { roleMention } = require('@discordjs/builders');
 
 const cmd = {
   trigger(data) {
-    if (data.name !== 'group') {
-      return false;
-    }
-
-    const [join] = data.options;
-
-    return join.name === 'leave';
+    return data.commandName === 'leave' && data.options.getSubcommand() === 'group';
   },
-  async action({ data, guild, channel, member }) {
-    const roleId = data.options?.[0]?.options?.[0].value;
-    const role = guild.roles.cache.get(roleId);
+  async action(interaction) {
+    const { channel, member } = interaction;
+    const role = interaction.options.getMentionable('role');
 
     if (!role.name.startsWith(prefix)) {
       await channel.send({
@@ -37,7 +32,9 @@ const cmd = {
       return;
     }
 
-    await member.roles.remove([roleId], 'User requested');
+    await member.roles.remove([role.id], 'User requested');
+
+    await interaction.editReply({ content: `Successfully left ${roleMention(role.id)}`, ephemeral: true });
   },
 };
 

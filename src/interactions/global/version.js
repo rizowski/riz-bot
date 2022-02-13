@@ -2,11 +2,10 @@ const pkg = require('../../../package.json');
 
 const cmd = {
   trigger(data) {
-    return data.name === 'version';
+    return data.commandName === 'version';
   },
-  conditions: [],
-  async action({ channel }) {
-    return channel.send(`My current version is: \`v${pkg.version}\``);
+  async action(interaction) {
+    await interaction.editReply(`My current version is: \`v${pkg.version}\``);
   },
 };
 
