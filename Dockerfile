@@ -1,4 +1,4 @@
-FROM node:lts-alpine
+FROM --platform=linux/amd64 node:lts-alpine
 ENV NODE_ENV production
 ENV STAGE prod
 ENV DOPPLER_TOKEN $DOPPLER_TOKEN
