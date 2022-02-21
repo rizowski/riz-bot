@@ -52,7 +52,22 @@ const commands = [create, join, version, change, list, leave];
 
 const rest = new REST({ version: '9' }).setToken(discord.token);
 
-rest
-  .put(Routes.applicationGuildCommands(discord.clientId, discord.guildId), { body: commands })
-  .then(() => console.log('Successfully registered application commands.'))
-  .catch(console.error);
+const update = () => {
+  return rest
+    .put(Routes.applicationGuildCommands(discord.clientId, discord.guildId), { body: commands })
+    .then(() => {
+      console.log('Successfully registered application commands.');
+    })
+    .catch(console.error);
+};
+
+const del = () => {
+  return rest
+    .put(Routes.applicationGuildCommands(discord.clientId, discord.guildId), { body: [] })
+    .then(() => {
+      console.log('Successfully registered application commands.');
+    })
+    .catch(console.error);
+};
+
+update();

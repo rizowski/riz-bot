@@ -13,7 +13,8 @@
     "lint": "xo . --quiet",
     "local": "doppler run -c dev -- nodemon .",
     "start": "node .",
-    "update:commands:dev": "doppler run -c dev -- node commands.js"
+    "update:commands:dev": "doppler run -c dev -- node commands.js",
+    "update:commands:prod": "doppler run -c prod -- node commands.js"
   },
   "author": "Colten Rouska",
   "license": "MIT",
