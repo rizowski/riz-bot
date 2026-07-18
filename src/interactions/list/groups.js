@@ -1,4 +1,4 @@
-const prefix = 'g:';
+import { GROUP_PREFIX as prefix } from '../groups.js';
 
 export default {
   trigger(interaction) {

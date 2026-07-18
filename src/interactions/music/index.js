@@ -1,5 +1,6 @@
 import { SlashCommandBuilder } from 'discord.js';
 import play from './play.js';
+import nowplaying from './nowplaying.js';
 import skip from './skip.js';
 import stop from './stop.js';
 import queue from './queue.js';
@@ -20,6 +21,7 @@ export const definitions = [
           o.setName('query').setDescription('YouTube URL, playlist URL, or search terms').setRequired(true)
         )
     )
+    .addSubcommand((sc) => sc.setName('nowplaying').setDescription('Show the current track and progress'))
     .addSubcommand((sc) => sc.setName('skip').setDescription('Skip the current track'))
     .addSubcommand((sc) => sc.setName('stop').setDescription('Stop playback, clear the queue, and leave'))
     .addSubcommand((sc) => sc.setName('queue').setDescription('Show the current queue'))
@@ -41,4 +43,4 @@ export const definitions = [
     ),
 ];
 
-export const cmds = [play, skip, stop, queue, shuffle, pause, resume, volume];
+export const cmds = [play, nowplaying, skip, stop, queue, shuffle, pause, resume, volume];

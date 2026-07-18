@@ -9,7 +9,9 @@ export const definitions = [
       sc
         .setName('group')
         .setDescription('Leave a group')
-        .addRoleOption((o) => o.setName('role').setDescription('The role to leave').setRequired(true))
+        .addStringOption((o) =>
+          o.setName('role').setDescription('The group to leave').setRequired(true).setAutocomplete(true)
+        )
     ),
 ];
 

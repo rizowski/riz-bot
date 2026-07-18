@@ -8,8 +8,10 @@ export const definitions = [
     .addSubcommand((sc) =>
       sc
         .setName('group')
-        .setDescription('The role to join, usually prefixed with g:')
-        .addRoleOption((o) => o.setName('role').setDescription('The role to add').setRequired(true))
+        .setDescription('Join a group')
+        .addStringOption((o) =>
+          o.setName('role').setDescription('The group to join').setRequired(true).setAutocomplete(true)
+        )
     ),
 ];
 

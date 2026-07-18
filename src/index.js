@@ -15,6 +15,11 @@ discord.onReady(async (client) => {
 });
 
 discord.onInteraction(async (interaction, client) => {
+  if (interaction.isAutocomplete()) {
+    await interactions.autocomplete(interaction);
+    return;
+  }
+
   try {
     if (!interaction.isChatInputCommand()) {
       return;

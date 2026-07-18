@@ -2,6 +2,20 @@ import { MessageFlags } from 'discord.js';
 import logger from '@local/logger';
 import { cmds } from './all.js';
 
+export const autocomplete = async (interaction) => {
+  const cmd = cmds.find((c) => c.trigger(interaction));
+
+  try {
+    if (cmd?.autocomplete) {
+      await cmd.autocomplete(interaction);
+    } else {
+      await interaction.respond([]);
+    }
+  } catch (error) {
+    logger.error(error);
+  }
+};
+
 export const run = async (interaction, client) => {
   logger.info({
     id: interaction.commandId,

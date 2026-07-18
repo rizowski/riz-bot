@@ -1,22 +1,22 @@
 import { roleMention } from 'discord.js';
 import { embeds } from '@local/responses';
-
-const prefix = 'g:';
+import { GROUP_PREFIX, resolveGroupRole, respondWithGroups } from '../groups.js';
 
 export default {
   trigger(interaction) {
     return interaction.commandName === 'leave' && interaction.options.getSubcommand() === 'group';
   },
   ephemeral: true,
+  autocomplete: respondWithGroups,
   async action(interaction) {
-    const { member } = interaction;
-    const role = interaction.options.getRole('role');
+    const { guild, member } = interaction;
+    const role = resolveGroupRole(guild, interaction.options.getString('role'));
 
-    if (!role.name.startsWith(prefix)) {
+    if (!role) {
       await interaction.editReply(
         embeds.error({
           title: 'Invalid Role',
-          description: `Must specify a role that starts with \`@${prefix}\``,
+          description: `Must specify a group that starts with \`@${GROUP_PREFIX}\` — try the autocomplete suggestions.`,
         })
       );
       return;

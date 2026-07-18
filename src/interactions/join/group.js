@@ -1,22 +1,22 @@
 import { ChannelType, channelMention } from 'discord.js';
 import { embeds } from '@local/responses';
-
-const prefix = 'g:';
+import { GROUP_PREFIX, resolveGroupRole, respondWithGroups } from '../groups.js';
 
 export default {
   trigger(interaction) {
     return interaction.commandName === 'join' && interaction.options.getSubcommand() === 'group';
   },
   ephemeral: true,
+  autocomplete: respondWithGroups,
   async action(interaction) {
     const { guild, member } = interaction;
-    const role = interaction.options.getRole('role');
+    const role = resolveGroupRole(guild, interaction.options.getString('role'));
 
-    if (!role.name.startsWith(prefix)) {
+    if (!role) {
       await interaction.editReply(
         embeds.error({
           title: 'Invalid Role',
-          description: `Must specify a role that starts with \`@${prefix}\``,
+          description: `Must specify a group that starts with \`@${GROUP_PREFIX}\` — try the autocomplete suggestions.`,
         })
       );
       return;
@@ -40,7 +40,7 @@ export default {
       await member.roles.add(role.id, 'User requested');
     }
 
-    const channelName = role.name.replace(prefix, '').toLowerCase();
+    const channelName = role.name.replace(GROUP_PREFIX, '').toLowerCase();
     const textChannel = guild.channels.cache.find((c) => c.name === channelName && c.type === ChannelType.GuildText);
 
     if (textChannel) {
