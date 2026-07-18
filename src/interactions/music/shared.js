@@ -1,8 +1,9 @@
 import { embeds } from '@local/responses';
 import { findSession } from '../../music/player.js';
+import { subcommand } from '../shared.js';
 
 export function musicSubcommand(name) {
-  return (interaction) => interaction.commandName === 'music' && interaction.options.getSubcommand() === name;
+  return subcommand('music', name);
 }
 
 export async function requireSession(interaction) {

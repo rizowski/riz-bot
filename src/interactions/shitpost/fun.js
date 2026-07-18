@@ -1,13 +1,13 @@
+import { roleMention } from 'discord.js';
 import { embeds } from '@local/responses';
 import { isEnabled } from '../../shitpost/state.js';
+import { roles } from '../../shitpost/users.js';
+import { MUFASA_URL } from '../../shitpost/lib.js';
+import { subcommand } from '../shared.js';
 
-const ADULT_ROLE_ID = '436193265327407107';
-
-function funCmd(subcommand, action) {
+function funCmd(name, action) {
   return {
-    trigger(interaction) {
-      return interaction.commandName === 'shitpost' && interaction.options.getSubcommand() === subcommand;
-    },
+    trigger: subcommand('shitpost', name),
     ephemeral: false,
     async action(interaction) {
       if (!isEnabled()) {
@@ -27,10 +27,10 @@ export const hype = funCmd('hype', async (interaction) => {
 });
 
 export const adult = funCmd('adult', async (interaction) => {
-  await interaction.editReply(`<@&${ADULT_ROLE_ID}>`);
+  await interaction.editReply(roleMention(roles.adult));
   await interaction.channel.send('👁 👁\n       👄\n🤜  🤛');
 });
 
 export const mufasa = funCmd('mufasa', async (interaction) => {
-  await interaction.editReply('https://www.youtube.com/watch?v=1AnG04qnLqI');
+  await interaction.editReply(MUFASA_URL);
 });

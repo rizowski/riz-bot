@@ -9,3 +9,7 @@ export const users = {
 
 // The humans from shitpost-bot-rs users.rs — the only ones allowed to toggle.
 export const togglers = new Set([users.aaron, users.bacon, users.jerran, users.rizo, users.zack]);
+
+export const roles = {
+  adult: '436193265327407107',
+};

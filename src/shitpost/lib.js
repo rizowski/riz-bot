@@ -1,5 +1,7 @@
 export const BLAZE_IT_RE = /4[./:]?20/;
 
+export const MUFASA_URL = 'https://www.youtube.com/watch?v=1AnG04qnLqI';
+
 export const DOG_TRIGGERS = ['bark', 'bork', 'woof', '🐶'];
 
 // Ordered: "friend" wins over "buddy" when both appear.
@@ -8,8 +10,8 @@ const HES_NOT_YOUR = [
   ['buddy', 'guy'],
 ];
 
-export function hesNotYour(content) {
-  const lower = content.toLowerCase();
+// Expects already-lowercased content.
+export function hesNotYour(lower) {
   const match = HES_NOT_YOUR.find(([trigger]) => lower.includes(trigger));
 
   if (!match) {

@@ -1,12 +1,11 @@
 import { embeds } from '@local/responses';
 import { isEnabled, setEnabled } from '../../shitpost/state.js';
 import { togglers } from '../../shitpost/users.js';
+import { subcommand } from '../shared.js';
 
-function toggleCmd(subcommand, value, description) {
+function toggleCmd(name, value, description) {
   return {
-    trigger(interaction) {
-      return interaction.commandName === 'shitpost' && interaction.options.getSubcommand() === subcommand;
-    },
+    trigger: subcommand('shitpost', name),
     ephemeral: false,
     async action(interaction) {
       if (!togglers.has(interaction.user.id)) {
@@ -29,9 +28,7 @@ export const on = toggleCmd('on', true, 'Chaos restored. 😈');
 export const off = toggleCmd('off', false, 'Fine. Being normal now. 😇');
 
 export const status = {
-  trigger(interaction) {
-    return interaction.commandName === 'shitpost' && interaction.options.getSubcommand() === 'status';
-  },
+  trigger: subcommand('shitpost', 'status'),
   ephemeral: true,
   async action(interaction) {
     await interaction.editReply(

@@ -20,19 +20,7 @@ export const emojis = {
   feelsbadman: { id: '301512177469227008', name: 'feelsbadman' },
 };
 
-export const parrotWaves = [
-  emojis.parrotwave7,
-  emojis.parrotwave6,
-  emojis.parrotwave5,
-  emojis.parrotwave4,
-  emojis.parrotwave3,
-  emojis.parrotwave2,
-  emojis.parrotwave1,
-];
-
-export function formatEmoji({ id, name, animated }) {
-  return `<${animated ? 'a' : ''}:${name}:${id}>`;
-}
+export const parrotWaves = [7, 6, 5, 4, 3, 2, 1].map((n) => emojis[`parrotwave${n}`]);
 
 const LETTER_A = 0x1f1e6;
 const A_CODE = 'a'.codePointAt(0);
