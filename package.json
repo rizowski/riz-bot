@@ -18,7 +18,7 @@
     "format:check": "oxfmt --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "postinstall": "lefthook install"
+    "postinstall": "lefthook install || true"
   },
   "author": "Colten Rouska",
   "license": "MIT",

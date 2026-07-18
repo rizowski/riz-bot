@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 node:lts-alpine
+FROM --platform=linux/amd64 node:26-alpine
 ENV NODE_ENV production
 ENV STAGE prod
 ENV DOPPLER_TOKEN $DOPPLER_TOKEN
@@ -15,6 +15,6 @@ RUN (curl -Ls https://cli.doppler.com/install.sh || wget -qO- https://cli.dopple
 COPY --chown=node:node . /app
 USER node
 
-RUN yarn install
+RUN yarn install --immutable
 ENTRYPOINT ["doppler", "run", "--"]
 CMD yarn start
