@@ -19,13 +19,19 @@ function fakeGuild() {
   return { guild: { roles: { cache: roles }, channels: { cache: channels } }, role, text, voice, category };
 }
 
-function fakeInteraction(guild, userId, roleInput = '10') {
+// `confirm` simulates what awaitMessageComponent resolves to:
+// an object for a click, or a rejection for a timeout.
+function fakeInteraction(guild, userId, { roleInput = '10', confirm } = {}) {
+  const message = {
+    awaitMessageComponent: confirm ? vi.fn().mockResolvedValue(confirm) : vi.fn().mockRejectedValue(new Error('time')),
+  };
+
   return {
     commandName: 'group',
     guild,
     user: { id: userId, username: 'tester' },
     options: { getSubcommand: () => 'remove', getString: () => roleInput },
-    editReply: vi.fn(),
+    editReply: vi.fn().mockResolvedValue(message),
   };
 }
 
@@ -42,9 +48,19 @@ describe('/group remove', () => {
     );
   });
 
-  it('deletes the channels, category, and role for listed users', async () => {
+  it('rejects non-group roles', async () => {
+    const { guild, role } = fakeGuild();
+    const interaction = fakeInteraction(guild, users.rizo, { roleInput: 'not-a-group' });
+
+    await remove.action(interaction);
+
+    expect(role.delete).not.toHaveBeenCalled();
+  });
+
+  it('deletes everything after the confirm button', async () => {
     const { guild, role, text, voice, category } = fakeGuild();
-    const interaction = fakeInteraction(guild, users.rizo);
+    const confirm = { customId: 'group-remove-confirm', deferUpdate: vi.fn(), update: vi.fn() };
+    const interaction = fakeInteraction(guild, users.rizo, { confirm });
 
     await remove.action(interaction);
 
@@ -52,20 +68,35 @@ describe('/group remove', () => {
     expect(voice.delete).toHaveBeenCalled();
     expect(category.delete).toHaveBeenCalled();
     expect(role.delete).toHaveBeenCalled();
-    expect(interaction.editReply).toHaveBeenCalledWith(
-      expect.objectContaining({ embeds: [expect.objectContaining({ title: 'Group removed' })] })
+    expect(interaction.editReply).toHaveBeenLastCalledWith(
+      expect.objectContaining({ embeds: [expect.objectContaining({ title: 'Group removed' })], components: [] })
     );
   });
 
-  it('rejects non-group roles', async () => {
-    const { guild, role } = fakeGuild();
-    const interaction = fakeInteraction(guild, users.rizo, 'not-a-group');
+  it('deletes nothing on cancel', async () => {
+    const { guild, role, text } = fakeGuild();
+    const confirm = { customId: 'group-remove-cancel', deferUpdate: vi.fn(), update: vi.fn() };
+    const interaction = fakeInteraction(guild, users.rizo, { confirm });
 
     await remove.action(interaction);
 
     expect(role.delete).not.toHaveBeenCalled();
-    expect(interaction.editReply).toHaveBeenCalledWith(
-      expect.objectContaining({ embeds: [expect.objectContaining({ title: 'Invalid Role' })] })
+    expect(text.delete).not.toHaveBeenCalled();
+    expect(confirm.update).toHaveBeenCalledWith(
+      expect.objectContaining({ embeds: [expect.objectContaining({ title: 'Cancelled' })], components: [] })
+    );
+  });
+
+  it('deletes nothing on timeout', async () => {
+    const { guild, role, text } = fakeGuild();
+    const interaction = fakeInteraction(guild, users.rizo);
+
+    await remove.action(interaction);
+
+    expect(role.delete).not.toHaveBeenCalled();
+    expect(text.delete).not.toHaveBeenCalled();
+    expect(interaction.editReply).toHaveBeenLastCalledWith(
+      expect.objectContaining({ embeds: [expect.objectContaining({ title: 'Timed out' })], components: [] })
     );
   });
 });

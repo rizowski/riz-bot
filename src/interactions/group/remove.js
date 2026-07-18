@@ -1,8 +1,41 @@
-import { ChannelType } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ComponentType } from 'discord.js';
 import { embeds } from '@local/responses';
 import { togglers } from '../../shitpost/users.js';
 import { GROUP_PREFIX, resolveGroupRole, respondWithGroups } from '../groups.js';
 import { subcommand } from '../shared.js';
+
+const CONFIRM_ID = 'group-remove-confirm';
+const CANCEL_ID = 'group-remove-cancel';
+const CONFIRM_WINDOW_MS = 30_000;
+
+async function removeGroup(guild, role, reason) {
+  const groupName = role.name;
+  const channelName = groupName.replace(GROUP_PREFIX, '').toLowerCase();
+
+  const textChannel = guild.channels.cache.find((c) => c.name === channelName && c.type === ChannelType.GuildText);
+  const voiceChannel = guild.channels.cache.find((c) => c.name === channelName && c.type === ChannelType.GuildVoice);
+  const category = guild.channels.cache.find(
+    (c) => c.name.toLowerCase() === groupName.toLowerCase() && c.type === ChannelType.GuildCategory
+  );
+
+  const removed = [];
+
+  for (const [label, target] of [
+    ['text channel', textChannel],
+    ['voice channel', voiceChannel],
+    ['category', category],
+  ]) {
+    if (target) {
+      await target.delete(reason);
+      removed.push(label);
+    }
+  }
+
+  await role.delete(reason);
+  removed.push('role');
+
+  return removed;
+}
 
 export default {
   trigger: subcommand('group', 'remove'),
@@ -33,36 +66,55 @@ export default {
     }
 
     const groupName = role.name;
-    const channelName = role.name.replace(GROUP_PREFIX, '').toLowerCase();
-    const reason = `Group ${groupName} removed by ${interaction.user.username}`;
 
-    const textChannel = guild.channels.cache.find((c) => c.name === channelName && c.type === ChannelType.GuildText);
-    const voiceChannel = guild.channels.cache.find((c) => c.name === channelName && c.type === ChannelType.GuildVoice);
-    const category = guild.channels.cache.find(
-      (c) => c.name.toLowerCase() === groupName.toLowerCase() && c.type === ChannelType.GuildCategory
+    const buttons = new ActionRowBuilder().addComponents(
+      new ButtonBuilder().setCustomId(CONFIRM_ID).setLabel('Delete it').setStyle(ButtonStyle.Danger),
+      new ButtonBuilder().setCustomId(CANCEL_ID).setLabel('Cancel').setStyle(ButtonStyle.Secondary)
     );
 
-    const removed = [];
+    const message = await interaction.editReply({
+      ...embeds.error({
+        title: `Delete ${groupName}?`,
+        description: 'This permanently deletes the role, category, and channels — message history included.',
+      }),
+      components: [buttons],
+    });
 
-    for (const [label, target] of [
-      ['text channel', textChannel],
-      ['voice channel', voiceChannel],
-      ['category', category],
-    ]) {
-      if (target) {
-        await target.delete(reason);
-        removed.push(label);
-      }
+    let confirmation;
+
+    try {
+      confirmation = await message.awaitMessageComponent({
+        componentType: ComponentType.Button,
+        filter: (i) => i.user.id === interaction.user.id,
+        time: CONFIRM_WINDOW_MS,
+      });
+    } catch {
+      await interaction.editReply({
+        ...embeds.error({ title: 'Timed out', description: `Took too long — \`${groupName}\` lives on.` }),
+        components: [],
+      });
+      return;
     }
 
-    await role.delete(reason);
-    removed.push('role');
+    if (confirmation.customId !== CONFIRM_ID) {
+      await confirmation.update({
+        ...embeds.success({ title: 'Cancelled', description: `\`${groupName}\` lives on. 😌` }),
+        components: [],
+      });
+      return;
+    }
 
-    await interaction.editReply(
-      embeds.success({
+    await confirmation.deferUpdate();
+
+    const reason = `Group ${groupName} removed by ${interaction.user.username}`;
+    const removed = await removeGroup(guild, role, reason);
+
+    await interaction.editReply({
+      ...embeds.success({
         title: 'Group removed',
         description: `Deleted \`${groupName}\`: ${removed.join(', ')}. 🧹`,
-      })
-    );
+      }),
+      components: [],
+    });
   },
 };
