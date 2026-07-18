@@ -6,9 +6,10 @@ const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildVoiceStates,
     GatewayIntentBits.GuildMessages,
-    // Privileged: must be enabled under Bot -> Privileged Gateway Intents
-    // in the Discord developer portal or login will be rejected.
+    // Privileged: both must be enabled under Bot -> Privileged Gateway
+    // Intents in the Discord developer portal or login will be rejected.
     GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildPresences,
   ],
 });
 
@@ -60,5 +61,11 @@ export const onInteraction = (callback) => {
 export const onMessage = (callback) => {
   client.on(Events.MessageCreate, (message) => {
     callback(message, client);
+  });
+};
+
+export const onPresenceUpdate = (callback) => {
+  client.on(Events.PresenceUpdate, (oldPresence, newPresence) => {
+    callback(newPresence, client);
   });
 };

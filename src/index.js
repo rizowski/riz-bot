@@ -16,6 +16,18 @@ discord.onReady(async (client) => {
   });
 
   status.init(client);
+
+  for (const presence of guild.presences.cache.values()) {
+    status.handlePresence(presence);
+  }
+});
+
+discord.onPresenceUpdate((presence) => {
+  try {
+    status.handlePresence(presence);
+  } catch (error) {
+    logger.error(error);
+  }
 });
 
 discord.onInteraction(async (interaction, client) => {

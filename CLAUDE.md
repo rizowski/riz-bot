@@ -43,7 +43,9 @@ The router (`src/interactions/index.js`) defers the reply with the handler's `ep
 
 ### Intents
 
-The client requests `Guilds`, `GuildVoiceStates`, `GuildMessages`, and `MessageContent`. **MessageContent is privileged** — it must be enabled in the Discord developer portal or login is rejected. `/group info` shows cached (approximate) member counts because the privileged `GuildMembers` intent is deliberately not requested.
+The client requests `Guilds`, `GuildVoiceStates`, `GuildMessages`, `MessageContent`, and `GuildPresences`. **MessageContent and GuildPresences are privileged** — both must be enabled in the Discord developer portal or login is rejected. `/group info` shows cached (approximate) member counts because the privileged `GuildMembers` intent is deliberately not requested.
+
+The bot's own presence is driven by `src/status/`: layered custom statuses (music jam > creeping on a gamer > rotating command hints every 5 minutes), fed by the music player and `PresenceUpdate` events.
 
 ## Testing conventions
 

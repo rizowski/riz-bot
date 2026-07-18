@@ -86,7 +86,7 @@ class MusicSession {
 
     if (!track) {
       this.current = null;
-      status.setIdle();
+      status.clearPlaying();
       this.#scheduleIdleDisconnect();
       return null;
     }
@@ -165,7 +165,7 @@ class MusicSession {
 
     this.connection = null;
     sessions.delete(this.guildId);
-    status.setIdle();
+    status.clearPlaying();
   }
 }
 
