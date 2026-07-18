@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { HINTS, createStatusManager } from './manager.js';
 
+const CREEP = '👀 Creeping on rizo playing DOOM';
+
 beforeEach(() => {
   vi.useFakeTimers();
 });
@@ -59,14 +61,31 @@ describe('status manager', () => {
     manager.stop();
   });
 
-  it('clearPlaying resumes rotation with the next hint', () => {
+  it('a new creep target shows immediately', () => {
     const { setActivity, manager } = makeManager();
 
     manager.start();
-    manager.setPlaying('the-lounge');
-    manager.clearPlaying();
+    manager.setCreeping(CREEP);
+
+    expect(lastState(setActivity)).toBe(CREEP);
+    manager.stop();
+  });
+
+  it('alternates between creeping and hints while a gamer is around', () => {
+    const { setActivity, manager } = makeManager();
+
+    manager.start();
+    manager.setCreeping(CREEP);
+
+    expect(lastState(setActivity)).toBe(CREEP);
+
+    vi.advanceTimersByTime(1000);
 
     expect(lastState(setActivity)).toBe(HINTS[1]);
+
+    vi.advanceTimersByTime(1000);
+
+    expect(lastState(setActivity)).toBe(CREEP);
 
     vi.advanceTimersByTime(1000);
 
@@ -74,47 +93,48 @@ describe('status manager', () => {
     manager.stop();
   });
 
-  it('creeping replaces idle hints and stops the rotation', () => {
+  it('music outranks the rotation and resumes it when cleared', () => {
     const { setActivity, manager } = makeManager();
 
     manager.start();
-    manager.setCreeping('👀 Creeping on rizo playing DOOM');
-
-    expect(lastState(setActivity)).toBe('👀 Creeping on rizo playing DOOM');
-
-    const calls = setActivity.mock.calls.length;
-    vi.advanceTimersByTime(5000);
-
-    expect(setActivity).toHaveBeenCalledTimes(calls);
-    manager.stop();
-  });
-
-  it('music outranks creeping, which outranks hints', () => {
-    const { setActivity, manager } = makeManager();
-
-    manager.start();
+    manager.setCreeping(CREEP);
     manager.setPlaying('the-lounge');
-    manager.setCreeping('👀 Creeping on rizo playing DOOM');
 
     expect(lastState(setActivity)).toBe('🎶 Jamming out in #the-lounge');
 
     manager.clearPlaying();
+    vi.advanceTimersByTime(1000);
 
-    expect(lastState(setActivity)).toBe('👀 Creeping on rizo playing DOOM');
-
-    manager.clearCreeping();
-
-    expect(lastState(setActivity)).toBe(HINTS[1]);
+    expect([CREEP, ...HINTS]).toContain(lastState(setActivity));
     manager.stop();
   });
 
-  it('deduplicates identical consecutive statuses', () => {
+  it('clearing the creep while it is shown moves to a hint immediately', () => {
     const { setActivity, manager } = makeManager();
 
-    manager.setCreeping('👀 Creeping on rizo playing DOOM');
-    manager.setCreeping('👀 Creeping on rizo playing DOOM');
+    manager.start();
+    manager.setCreeping(CREEP);
 
-    expect(setActivity).toHaveBeenCalledTimes(1);
+    expect(lastState(setActivity)).toBe(CREEP);
+
+    manager.clearCreeping();
+
+    expect(HINTS).toContain(lastState(setActivity));
+    manager.stop();
+  });
+
+  it('re-setting the same creep text does not reset the rotation', () => {
+    const { setActivity, manager } = makeManager();
+
+    manager.start();
+    manager.setCreeping(CREEP);
+
+    const calls = setActivity.mock.calls.length;
+
+    manager.setCreeping(CREEP);
+    manager.setCreeping(CREEP);
+
+    expect(setActivity).toHaveBeenCalledTimes(calls);
     manager.stop();
   });
 });

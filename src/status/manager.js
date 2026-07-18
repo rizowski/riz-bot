@@ -13,12 +13,15 @@ export const HINTS = [
 
 const FIVE_MINUTES = 5 * 60 * 1000;
 
-// Status layers, highest priority first: music > creeping > rotating hints.
+// Music pins the status. Otherwise the status rotates on the interval,
+// alternating between creeping on a gamer (when there is one) and the
+// next command hint — so hints still get airtime on a busy server.
 export function createStatusManager({ setActivity, intervalMs = FIVE_MINUTES }) {
   let timer = null;
   let index = 0;
   let music = null;
   let creep = null;
+  let creepTurn = true;
   let lastShown = null;
 
   const show = (name, state) => {
@@ -37,27 +40,34 @@ export function createStatusManager({ setActivity, intervalMs = FIVE_MINUTES }) 
     }
   };
 
-  const applyIdleHint = () => {
-    show('hint', HINTS[index % HINTS.length]);
-    index++;
+  const rotate = () => {
+    if (creep && creepTurn) {
+      show('creep', creep);
+    } else {
+      show('hint', HINTS[index % HINTS.length]);
+      index++;
+    }
+
+    creepTurn = !creepTurn;
+  };
+
+  const startRotation = () => {
+    stopTimer();
+    rotate();
+    timer = setInterval(rotate, intervalMs);
+    timer.unref?.();
   };
 
   const apply = () => {
-    const pinned = music ?? creep;
-
-    if (pinned) {
+    if (music) {
       stopTimer();
-      show(music ? 'music' : 'creep', pinned);
+      show('music', music);
       return;
     }
 
-    if (timer) {
-      return;
+    if (!timer) {
+      startRotation();
     }
-
-    applyIdleHint();
-    timer = setInterval(applyIdleHint, intervalMs);
-    timer.unref?.();
   };
 
   return {
@@ -71,17 +81,29 @@ export function createStatusManager({ setActivity, intervalMs = FIVE_MINUTES }) 
       apply();
     },
     setCreeping(text) {
+      if (creep === text) {
+        return;
+      }
+
       creep = text;
 
       if (!music) {
-        apply();
+        // A new (or changed) target shows immediately, then alternation resumes.
+        creepTurn = true;
+        startRotation();
       }
     },
     clearCreeping() {
+      if (!creep) {
+        return;
+      }
+
+      const wasShowingCreep = lastShown === creep;
       creep = null;
 
-      if (!music) {
-        apply();
+      if (!music && wasShowingCreep) {
+        creepTurn = false;
+        startRotation();
       }
     },
     stop: stopTimer,
