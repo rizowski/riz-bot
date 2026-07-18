@@ -1,4 +1,3 @@
-import config from 'config';
 import logger from '@local/logger';
 import { embeds } from '@local/responses';
 import { sanitizeEmojiName, isValidEmojiName } from './sanitize.js';
@@ -58,7 +57,7 @@ export default {
       await interaction.editReply(
         embeds.error({
           title: 'Aw shit something broke something or something',
-          description: `<@${config.discord.ownerId}> ||${error.message}||`,
+          description: `<@100758264047747072> ||${error.message}||`,
         })
       );
     }
