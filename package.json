@@ -1,71 +1,40 @@
 {
   "name": "riz-bot",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "private": true,
   "description": "Rizowski's discord server bot",
+  "type": "module",
   "main": "src/index.js",
+  "packageManager": "yarn@4.17.1",
   "workspaces": [
-    "packages/*",
-    "."
+    "packages/*"
   ],
   "scripts": {
-    "lint:fix": "npm run lint -- --fix",
-    "lint": "xo . --quiet",
-    "local": "doppler run -c dev -- nodemon .",
     "start": "node .",
-    "update:commands:dev": "doppler run -c dev -- node commands.js",
-    "update:commands:prod": "doppler run -c prod -- node commands.js"
+    "local": "doppler run -c dev -- node --watch src/index.js",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "postinstall": "lefthook install"
   },
   "author": "Colten Rouska",
   "license": "MIT",
   "engines": {
-    "node": ">=16"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "xo": {
-    "prettier": true,
-    "space": true,
-    "plugins": [
-      "unicorn"
-    ],
-    "rules": {
-      "unicorn/no-reduce": "off",
-      "unicorn/no-fn-reference-in-iterator": "off",
-      "unicorn/prevent-abbreviations": "off",
-      "import/no-anonymous-default-export": "off"
-    }
-  },
-  "lint-staged": {
-    "*.js": [
-      "npm run lint:fix",
-      "git add"
-    ],
-    "*.{js,json,css,md,ts}": [
-      "prettier --write",
-      "git add"
-    ]
-  },
-  "devDependencies": {
-    "@discordjs/rest": "^0.3.0",
-    "discord-api-types": "^0.27.0",
-    "eslint": "^7.23.0",
-    "eslint-plugin-prettier": "^3.3.1",
-    "husky": "^4.3.6",
-    "lint-staged": "^10.5.4",
-    "nodemon": "^2.0.7",
-    "prettier": "^2.2.1",
-    "xo": "^0.38.2"
+    "node": ">=26"
   },
   "dependencies": {
-    "@discordjs/builders": "^0.12.0",
-    "@local/discord": "workspace:packages/discord",
-    "@local/logger": "workspace:packages/logger",
-    "@local/responses": "workspace:packages/responses",
-    "config": "^3.3.6",
-    "lodash.snakecase": "^4.1.1"
+    "@local/discord": "workspace:*",
+    "@local/logger": "workspace:*",
+    "@local/responses": "workspace:*",
+    "config": "^4.4.2"
+  },
+  "devDependencies": {
+    "lefthook": "^2.1.10",
+    "oxfmt": "^0.59.0",
+    "oxlint": "^1.74.0",
+    "vitest": "^4.1.10"
   }
 }

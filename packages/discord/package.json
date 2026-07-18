@@ -1,8 +1,10 @@
 {
   "name": "@local/discord",
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "type": "module",
+  "main": "index.js",
   "dependencies": {
-    "@local/logger": "workspace:packages/logger",
-    "discord.js": "^13.6.0"
+    "@local/logger": "workspace:*",
+    "discord.js": "^14.27.0"
   }
 }
