@@ -4,6 +4,7 @@ import * as discord from '@local/discord';
 import * as interactions from './interactions/index.js';
 import { definitions } from './interactions/all.js';
 import * as shitpost from './shitpost/index.js';
+import * as status from './status/index.js';
 
 discord.onReady(async (client) => {
   const guild = await client.guilds.fetch(config.discord.guildId);
@@ -13,6 +14,8 @@ discord.onReady(async (client) => {
     count: definitions.length,
     guild: guild.name,
   });
+
+  status.init(client);
 });
 
 discord.onInteraction(async (interaction, client) => {

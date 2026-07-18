@@ -9,6 +9,7 @@ import {
   joinVoiceChannel,
 } from '@discordjs/voice';
 import logger from '@local/logger';
+import * as status from '../status/index.js';
 import { TrackQueue } from './queue.js';
 import { streamTrack } from './ytdlp.js';
 
@@ -50,6 +51,7 @@ class MusicSession {
     }
 
     this.connection?.destroy();
+    this.channelName = voiceChannel.name;
     this.connection = joinVoiceChannel({
       channelId: voiceChannel.id,
       guildId: voiceChannel.guild.id,
@@ -84,6 +86,7 @@ class MusicSession {
 
     if (!track) {
       this.current = null;
+      status.setIdle();
       this.#scheduleIdleDisconnect();
       return null;
     }
@@ -97,6 +100,7 @@ class MusicSession {
     });
     this.resource.volume.setVolume(this.volume / 100);
     this.player.play(this.resource);
+    status.setPlaying(this.channelName);
     logger.info({ message: 'Playing', guild: this.guildId, track: track.title });
 
     return track;
@@ -161,6 +165,7 @@ class MusicSession {
 
     this.connection = null;
     sessions.delete(this.guildId);
+    status.setIdle();
   }
 }
 
