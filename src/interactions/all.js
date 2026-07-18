@@ -6,8 +6,9 @@ import * as create from './create/index.js';
 import * as emoji from './emoji/index.js';
 import * as music from './music/index.js';
 import * as group from './group/index.js';
+import * as shitpost from './shitpost/index.js';
 
-const groups = [global, list, join, leave, create, emoji, music, group];
+const groups = [global, list, join, leave, create, emoji, music, group, shitpost];
 
 export const cmds = groups.flatMap((g) => g.cmds);
 export const definitions = groups.flatMap((g) => g.definitions).map((d) => d.toJSON());

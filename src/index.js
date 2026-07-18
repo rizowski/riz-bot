@@ -3,6 +3,7 @@ import logger from '@local/logger';
 import * as discord from '@local/discord';
 import * as interactions from './interactions/index.js';
 import { definitions } from './interactions/all.js';
+import * as shitpost from './shitpost/index.js';
 
 discord.onReady(async (client) => {
   const guild = await client.guilds.fetch(config.discord.guildId);
@@ -35,6 +36,14 @@ discord.onInteraction(async (interaction, client) => {
     } else {
       await interaction.reply(payload);
     }
+  }
+});
+
+discord.onMessage(async (message) => {
+  try {
+    await shitpost.handleMessage(message);
+  } catch (error) {
+    logger.error(error);
   }
 });
 

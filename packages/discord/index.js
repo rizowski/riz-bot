@@ -2,7 +2,14 @@ import { Client, Events, GatewayIntentBits } from 'discord.js';
 import logger from '@local/logger';
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates],
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.GuildMessages,
+    // Privileged: must be enabled under Bot -> Privileged Gateway Intents
+    // in the Discord developer portal or login will be rejected.
+    GatewayIntentBits.MessageContent,
+  ],
 });
 
 client.on(Events.ClientReady, () => {
@@ -47,5 +54,11 @@ export const onReady = (callback) => {
 export const onInteraction = (callback) => {
   client.on(Events.InteractionCreate, (interaction) => {
     callback(interaction, client);
+  });
+};
+
+export const onMessage = (callback) => {
+  client.on(Events.MessageCreate, (message) => {
+    callback(message, client);
   });
 };
