@@ -5,43 +5,67 @@ import { currentTarget, reset, trackPresence } from './creeper.js';
 const playing = (game) => [{ type: ActivityType.Playing, name: game }];
 const custom = (text) => [{ type: ActivityType.Custom, name: 'Custom Status', state: text }];
 
+function present({ id, name, activities, status = 'online', bot = false }) {
+  return trackPresence({ id, bot, displayName: name, activities, status });
+}
+
 beforeEach(() => {
   reset();
 });
 
 describe('creeper', () => {
   it('tracks a member who starts playing', () => {
-    trackPresence({ id: '1', bot: false, displayName: 'rizo', activities: playing('DOOM') });
+    present({ id: '1', name: 'rizo', activities: playing('DOOM') });
 
     expect(currentTarget()).toEqual({ name: 'rizo', game: 'DOOM' });
   });
 
   it('prefers the most recent game-starter', () => {
-    trackPresence({ id: '1', bot: false, displayName: 'rizo', activities: playing('DOOM') });
-    trackPresence({ id: '2', bot: false, displayName: 'zack', activities: playing('Factorio') });
+    present({ id: '1', name: 'rizo', activities: playing('DOOM') });
+    present({ id: '2', name: 'zack', activities: playing('Factorio') });
 
     expect(currentTarget()).toEqual({ name: 'zack', game: 'Factorio' });
   });
 
   it('falls back to another gamer when the target stops', () => {
-    trackPresence({ id: '1', bot: false, displayName: 'rizo', activities: playing('DOOM') });
-    trackPresence({ id: '2', bot: false, displayName: 'zack', activities: playing('Factorio') });
-    trackPresence({ id: '2', bot: false, displayName: 'zack', activities: [] });
+    present({ id: '1', name: 'rizo', activities: playing('DOOM') });
+    present({ id: '2', name: 'zack', activities: playing('Factorio') });
+    present({ id: '2', name: 'zack', activities: [] });
 
     expect(currentTarget()).toEqual({ name: 'rizo', game: 'DOOM' });
   });
 
   it('returns null when nobody is playing', () => {
-    trackPresence({ id: '1', bot: false, displayName: 'rizo', activities: playing('DOOM') });
-    trackPresence({ id: '1', bot: false, displayName: 'rizo', activities: custom('afk') });
+    present({ id: '1', name: 'rizo', activities: playing('DOOM') });
+    present({ id: '1', name: 'rizo', activities: custom('afk') });
 
     expect(currentTarget()).toBeNull();
   });
 
   it('ignores bots and non-game activities', () => {
-    trackPresence({ id: '9', bot: true, displayName: 'beep', activities: playing('Botting') });
-    trackPresence({ id: '1', bot: false, displayName: 'rizo', activities: custom('vibing') });
+    present({ id: '9', name: 'beep', activities: playing('Botting'), bot: true });
+    present({ id: '1', name: 'rizo', activities: custom('vibing') });
 
     expect(currentTarget()).toBeNull();
+  });
+
+  it('does not creep on idle gamers', () => {
+    present({ id: '1', name: 'rizo', activities: playing('DOOM'), status: 'idle' });
+
+    expect(currentTarget()).toBeNull();
+  });
+
+  it('drops a tracked gamer who goes idle and falls back', () => {
+    present({ id: '1', name: 'rizo', activities: playing('DOOM') });
+    present({ id: '2', name: 'zack', activities: playing('Factorio') });
+    present({ id: '2', name: 'zack', activities: playing('Factorio'), status: 'idle' });
+
+    expect(currentTarget()).toEqual({ name: 'rizo', game: 'DOOM' });
+  });
+
+  it('still creeps on do-not-disturb gamers', () => {
+    present({ id: '1', name: 'rizo', activities: playing('DOOM'), status: 'dnd' });
+
+    expect(currentTarget()).toEqual({ name: 'rizo', game: 'DOOM' });
   });
 });

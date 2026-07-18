@@ -45,6 +45,7 @@ export function handlePresence(presence) {
     bot: member.user.bot,
     displayName: member.displayName,
     activities: presence.activities,
+    status: presence.status,
   });
 
   if (target) {
