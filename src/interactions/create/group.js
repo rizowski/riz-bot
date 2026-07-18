@@ -25,6 +25,11 @@ export default {
       reason,
     });
 
+    // The bot must include itself: minimal guild permissions don't bypass
+    // the @everyone deny below, and an invisible channel breaks welcomes,
+    // /group info, and /music in this group.
+    const bot = interaction.client.user;
+
     const newChannel = await guild.channels.create({
       name: groupName,
       type: ChannelType.GuildText,
@@ -34,6 +39,15 @@ export default {
         {
           id: everyone.id,
           deny: [PermissionFlagsBits.ViewChannel],
+        },
+        {
+          id: bot.id,
+          allow: [
+            PermissionFlagsBits.ViewChannel,
+            PermissionFlagsBits.SendMessages,
+            PermissionFlagsBits.EmbedLinks,
+            PermissionFlagsBits.ReadMessageHistory,
+          ],
         },
         {
           id: role.id,
@@ -59,6 +73,10 @@ export default {
         {
           id: everyone.id,
           deny: [PermissionFlagsBits.ViewChannel],
+        },
+        {
+          id: bot.id,
+          allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.Connect, PermissionFlagsBits.Speak],
         },
         {
           id: role.id,
