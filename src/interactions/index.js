@@ -1,24 +1,29 @@
-const logger = require('@local/logger');
-const cmds = require('./all');
+import { MessageFlags } from 'discord.js';
+import logger from '@local/logger';
+import { cmds } from './all.js';
 
-exports.run = async (data, client) => {
+export const run = async (interaction, client) => {
   logger.info({
-    id: data.commandId,
-    command: `/${data.commandName} ${data.options?.[0]?.name}`,
+    id: interaction.commandId,
+    command: `/${interaction.commandName} ${interaction.options.getSubcommand(false) ?? ''}`.trim(),
   });
-  const cmd = cmds.find((cmd) => cmd.trigger(data));
+
+  const cmd = cmds.find((c) => c.trigger(interaction));
 
   if (!cmd) {
-    // const options = data.options?.map((o) => ` ${o.name}`).join(' ');
-
-    await data.reply(`Command \`/${data.commandName}\` has not been implemented yet.`);
+    await interaction.reply({
+      content: `Command \`/${interaction.commandName}\` has not been implemented yet.`,
+      flags: MessageFlags.Ephemeral,
+    });
+    return;
   }
 
-  await data.deferReply();
+  await interaction.deferReply(cmd.ephemeral ? { flags: MessageFlags.Ephemeral } : {});
 
   try {
-    await cmd.action(data, client);
+    await cmd.action(interaction, client);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
+    await interaction.editReply({ content: `Something failed. ||${error.message}||` });
   }
 };

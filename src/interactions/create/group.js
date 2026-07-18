@@ -1,63 +1,68 @@
-const { channelMention, roleMention } = require('@discordjs/builders');
+import { ChannelType, Colors, PermissionFlagsBits, channelMention, roleMention } from 'discord.js';
 
-const cmd = {
-  trigger(data) {
-    return ['create', 'add'].includes(data.commandName) && data.options.getSubcommand() === 'group';
+export default {
+  trigger(interaction) {
+    return interaction.commandName === 'create' && interaction.options.getSubcommand() === 'group';
   },
+  ephemeral: true,
   async action(interaction) {
     const { guild, member } = interaction;
     const groupName = interaction.options.getString('name');
     const name = `g:${groupName}`;
-
-    guild.roles.create({});
+    const reason = `Group created ${name} by ${member.user.username}`;
 
     const role = await guild.roles.create({
       name,
-      color: 'BLUE',
-      reason: `Group created ${name} by ${member.user.tag}`,
+      color: Colors.Blue,
+      reason,
     });
 
-    const everyone = guild.roles.resolve('101471536719888384');
+    const everyone = guild.roles.everyone;
 
-    const parent = await guild.channels.create(name, {
-      type: 'GUILD_CATEGORY',
-      reason: `Group created ${name} by ${member.user.tag}`,
+    const parent = await guild.channels.create({
+      name,
+      type: ChannelType.GuildCategory,
+      reason,
     });
 
-    const newChannel = await guild.channels.create(groupName, {
-      type: 'GUILD_TEXT',
-      parent,
+    const newChannel = await guild.channels.create({
+      name: groupName,
+      type: ChannelType.GuildText,
+      parent: parent.id,
+      reason,
       permissionOverwrites: [
         {
           id: everyone.id,
-          deny: ['VIEW_CHANNEL'],
+          deny: [PermissionFlagsBits.ViewChannel],
         },
         {
           id: role.id,
           allow: [
-            'VIEW_CHANNEL',
-            'SEND_MESSAGES',
-            'EMBED_LINKS',
-            'ATTACH_FILES',
-            'READ_MESSAGE_HISTORY',
-            'USE_EXTERNAL_EMOJIS',
+            PermissionFlagsBits.ViewChannel,
+            PermissionFlagsBits.SendMessages,
+            PermissionFlagsBits.EmbedLinks,
+            PermissionFlagsBits.AttachFiles,
+            PermissionFlagsBits.ReadMessageHistory,
+            PermissionFlagsBits.UseExternalEmojis,
           ],
         },
       ],
     });
 
-    await guild.channels.create(groupName, {
-      type: 'GUILD_VOICE',
-      parent,
+    await guild.channels.create({
+      name: groupName,
+      type: ChannelType.GuildVoice,
+      parent: parent.id,
       bitrate: 64000,
+      reason,
       permissionOverwrites: [
         {
           id: everyone.id,
-          deny: ['VIEW_CHANNEL'],
+          deny: [PermissionFlagsBits.ViewChannel],
         },
         {
           id: role.id,
-          allow: ['VIEW_CHANNEL', 'CONNECT', 'SPEAK'],
+          allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.Connect, PermissionFlagsBits.Speak],
         },
       ],
     });
@@ -68,8 +73,6 @@ const cmd = {
       content: `I created this ${channelMention(newChannel.id)} and this ${roleMention(
         role.id
       )} for you. You have also already been added to it.`,
-      ephemeral: true,
     });
   },
 };
-module.exports = cmd;

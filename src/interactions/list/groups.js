@@ -1,9 +1,10 @@
 const prefix = 'g:';
 
-module.exports = {
+export default {
   trigger(interaction) {
     return interaction.commandName === 'list' && interaction.options.getSubcommand() === 'groups';
   },
+  ephemeral: false,
   async action(interaction) {
     const { guild } = interaction;
     const groups = guild.roles.cache.filter((r) => r.name.startsWith(prefix));

@@ -1,53 +1,54 @@
-const prefix = 'g:';
-const { channelMention } = require('@discordjs/builders');
+import { ChannelType, channelMention } from 'discord.js';
+import { embeds } from '@local/responses';
 
-const cmd = {
-  trigger(data) {
-    return data.commandName === 'join' && data.options.getSubcommand() === 'group';
+const prefix = 'g:';
+
+export default {
+  trigger(interaction) {
+    return interaction.commandName === 'join' && interaction.options.getSubcommand() === 'group';
   },
+  ephemeral: true,
   async action(interaction) {
     const { guild, member } = interaction;
-    const role = interaction.options.getMentionable('role');
+    const role = interaction.options.getRole('role');
 
     if (!role.name.startsWith(prefix)) {
-      await interaction.editReply({
-        embed: {
+      await interaction.editReply(
+        embeds.error({
           title: 'Invalid Role',
           description: `Must specify a role that starts with \`@${prefix}\``,
-          color: 12124160,
-        },
-      });
+        })
+      );
       return;
     }
 
     if (!member) {
-      await interaction.editReply({
-        embed: {
+      await interaction.editReply(
+        embeds.error({
           title: 'Who are you?',
           description: `I can't seem to place who you are... 👁👄👁`,
-          color: 12124160,
-        },
-      });
-
+        })
+      );
       return;
     }
 
-    const additional = member.roles.cache.get(role.id)
+    const additional = member.roles.cache.has(role.id)
       ? '\nBTW: you were already in the group according to my data. 😐 awk...'
       : '';
 
     if (!additional) {
-      await member.roles.add([role.id], 'User requested');
+      await member.roles.add(role.id, 'User requested');
     }
 
-    const channelName = role.name.replace(`${prefix}`, '').toLowerCase();
+    const channelName = role.name.replace(prefix, '').toLowerCase();
+    const textChannel = guild.channels.cache.find((c) => c.name === channelName && c.type === ChannelType.GuildText);
 
-    const textChannel = guild.channels.cache.find((c) => c.name === channelName && c.type === 'GUILD_TEXT');
+    if (textChannel) {
+      await textChannel.send(`Hey <@${member.id}>! Welcome to the group.${additional}`);
+      await interaction.editReply({ content: `Successfully joined ${channelMention(textChannel.id)}` });
+      return;
+    }
 
-    await textChannel.send(`Hey <@${member.id}>! Welcome to the group.${additional}`);
-
-    interaction.editReply({ content: `Successfully joined ${channelMention(textChannel.id)}`, ephemeral: true });
+    await interaction.editReply({ content: `Successfully joined \`@${role.name}\`` });
   },
 };
-
-module.exports = cmd;
