@@ -15,15 +15,15 @@ function lastState(setActivity) {
   return setActivity.mock.calls.at(-1)[0].state;
 }
 
-function makeManager() {
+function makeManager(getCreep = () => null) {
   const setActivity = vi.fn();
-  const manager = createStatusManager({ setActivity, intervalMs: 1000 });
+  const manager = createStatusManager({ setActivity, getCreep, intervalMs: 1000 });
 
   return { setActivity, manager };
 }
 
 describe('status manager', () => {
-  it('shows a hint immediately and rotates on the interval', () => {
+  it('rotates hints when nobody is gaming', () => {
     const { setActivity, manager } = makeManager();
 
     manager.start();
@@ -46,8 +46,36 @@ describe('status manager', () => {
     manager.stop();
   });
 
-  it('setPlaying shows the jam status and pauses the rotation', () => {
-    const { setActivity, manager } = makeManager();
+  it('alternates between creeping and hints while gamers are around', () => {
+    const { setActivity, manager } = makeManager(() => CREEP);
+
+    manager.start();
+
+    expect(lastState(setActivity)).toBe(CREEP);
+
+    vi.advanceTimersByTime(1000);
+
+    expect(lastState(setActivity)).toBe(HINTS[0]);
+
+    vi.advanceTimersByTime(1000);
+
+    expect(lastState(setActivity)).toBe(CREEP);
+    manager.stop();
+  });
+
+  it('asks for a fresh creep target every creep slot', () => {
+    const getCreep = vi.fn(() => CREEP);
+    const { manager } = makeManager(getCreep);
+
+    manager.start();
+    vi.advanceTimersByTime(4000);
+
+    expect(getCreep.mock.calls.length).toBeGreaterThanOrEqual(2);
+    manager.stop();
+  });
+
+  it('setPlaying pins the jam status over the rotation', () => {
+    const { setActivity, manager } = makeManager(() => CREEP);
 
     manager.start();
     manager.setPlaying('the-lounge');
@@ -61,78 +89,48 @@ describe('status manager', () => {
     manager.stop();
   });
 
-  it('a new creep target shows immediately', () => {
-    const { setActivity, manager } = makeManager();
+  it('creepStarted shows a creep immediately', () => {
+    let target = null;
+    const { setActivity, manager } = makeManager(() => target);
 
     manager.start();
-    manager.setCreeping(CREEP);
+
+    expect(lastState(setActivity)).toBe(HINTS[0]);
+
+    target = CREEP;
+    manager.creepStarted();
 
     expect(lastState(setActivity)).toBe(CREEP);
     manager.stop();
   });
 
-  it('alternates between creeping and hints while a gamer is around', () => {
-    const { setActivity, manager } = makeManager();
+  it('creepEnded moves off a stale creep immediately', () => {
+    let target = CREEP;
+    const { setActivity, manager } = makeManager(() => target);
 
     manager.start();
-    manager.setCreeping(CREEP);
 
     expect(lastState(setActivity)).toBe(CREEP);
 
-    vi.advanceTimersByTime(1000);
-
-    expect(lastState(setActivity)).toBe(HINTS[1]);
-
-    vi.advanceTimersByTime(1000);
-
-    expect(lastState(setActivity)).toBe(CREEP);
-
-    vi.advanceTimersByTime(1000);
-
-    expect(lastState(setActivity)).toBe(HINTS[2]);
-    manager.stop();
-  });
-
-  it('music outranks the rotation and resumes it when cleared', () => {
-    const { setActivity, manager } = makeManager();
-
-    manager.start();
-    manager.setCreeping(CREEP);
-    manager.setPlaying('the-lounge');
-
-    expect(lastState(setActivity)).toBe('🎶 Jamming out in #the-lounge');
-
-    manager.clearPlaying();
-    vi.advanceTimersByTime(1000);
-
-    expect([CREEP, ...HINTS]).toContain(lastState(setActivity));
-    manager.stop();
-  });
-
-  it('clearing the creep while it is shown moves to a hint immediately', () => {
-    const { setActivity, manager } = makeManager();
-
-    manager.start();
-    manager.setCreeping(CREEP);
-
-    expect(lastState(setActivity)).toBe(CREEP);
-
-    manager.clearCreeping();
+    target = null;
+    manager.creepEnded();
 
     expect(HINTS).toContain(lastState(setActivity));
     manager.stop();
   });
 
-  it('re-setting the same creep text does not reset the rotation', () => {
-    const { setActivity, manager } = makeManager();
+  it('creepEnded does nothing while a hint is showing', () => {
+    let target = CREEP;
+    const { setActivity, manager } = makeManager(() => target);
 
     manager.start();
-    manager.setCreeping(CREEP);
+    vi.advanceTimersByTime(1000);
+
+    expect(lastState(setActivity)).toBe(HINTS[0]);
 
     const calls = setActivity.mock.calls.length;
-
-    manager.setCreeping(CREEP);
-    manager.setCreeping(CREEP);
+    target = null;
+    manager.creepEnded();
 
     expect(setActivity).toHaveBeenCalledTimes(calls);
     manager.stop();

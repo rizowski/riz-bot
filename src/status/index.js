@@ -1,18 +1,26 @@
 import logger from '@local/logger';
 import { createStatusManager } from './manager.js';
-import { trackPresence } from './creeper.js';
+import { hasGamers, randomTarget, trackPresence } from './creeper.js';
 
 let manager = null;
 
 const VERBS = ['👀 Creeping on', '📺 Watching'];
 
-// Stable per target so presence noise doesn't flip the verb mid-creep.
-function creepText({ name, game }) {
-  return `${VERBS[(name.length + game.length) % VERBS.length]} ${name} playing ${game}`;
+function getCreep() {
+  const target = randomTarget();
+
+  if (!target) {
+    return null;
+  }
+
+  const verb = VERBS[Math.floor(Math.random() * VERBS.length)];
+
+  return `${verb} ${target.name} playing ${target.game}`;
 }
 
 export function init(client) {
   manager = createStatusManager({
+    getCreep,
     setActivity(activity) {
       try {
         client.user.setPresence({ status: 'online', activities: [activity] });
@@ -40,7 +48,9 @@ export function handlePresence(presence) {
     return;
   }
 
-  const target = trackPresence({
+  const before = hasGamers();
+
+  trackPresence({
     id: member.id,
     bot: member.user.bot,
     displayName: member.displayName,
@@ -48,9 +58,11 @@ export function handlePresence(presence) {
     status: presence.status,
   });
 
-  if (target) {
-    manager?.setCreeping(creepText(target));
-  } else {
-    manager?.clearCreeping();
+  const after = hasGamers();
+
+  if (!before && after) {
+    manager?.creepStarted();
+  } else if (before && !after) {
+    manager?.creepEnded();
   }
 }

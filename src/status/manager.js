@@ -14,14 +14,14 @@ export const HINTS = [
 const FIVE_MINUTES = 5 * 60 * 1000;
 
 // Music pins the status. Otherwise the status rotates on the interval,
-// alternating between creeping on a gamer (when there is one) and the
-// next command hint — so hints still get airtime on a busy server.
-export function createStatusManager({ setActivity, intervalMs = FIVE_MINUTES }) {
+// alternating between creeping (getCreep supplies a fresh target each
+// slot) and the next command hint, so hints still get airtime.
+export function createStatusManager({ setActivity, getCreep = () => null, intervalMs = FIVE_MINUTES }) {
   let timer = null;
   let index = 0;
   let music = null;
-  let creep = null;
   let creepTurn = true;
+  let lastName = null;
   let lastShown = null;
 
   const show = (name, state) => {
@@ -29,6 +29,7 @@ export function createStatusManager({ setActivity, intervalMs = FIVE_MINUTES }) 
       return;
     }
 
+    lastName = name;
     lastShown = state;
     setActivity({ type: ActivityType.Custom, name, state });
   };
@@ -41,14 +42,19 @@ export function createStatusManager({ setActivity, intervalMs = FIVE_MINUTES }) 
   };
 
   const rotate = () => {
-    if (creep && creepTurn) {
-      show('creep', creep);
-    } else {
-      show('hint', HINTS[index % HINTS.length]);
-      index++;
+    if (creepTurn) {
+      const creep = getCreep();
+
+      if (creep) {
+        show('creep', creep);
+        creepTurn = false;
+        return;
+      }
     }
 
-    creepTurn = !creepTurn;
+    show('hint', HINTS[index % HINTS.length]);
+    index++;
+    creepTurn = true;
   };
 
   const startRotation = () => {
@@ -80,29 +86,16 @@ export function createStatusManager({ setActivity, intervalMs = FIVE_MINUTES }) 
       music = null;
       apply();
     },
-    setCreeping(text) {
-      if (creep === text) {
-        return;
-      }
-
-      creep = text;
-
+    // The first gamer appeared — creep right away instead of waiting a slot.
+    creepStarted() {
       if (!music) {
-        // A new (or changed) target shows immediately, then alternation resumes.
         creepTurn = true;
         startRotation();
       }
     },
-    clearCreeping() {
-      if (!creep) {
-        return;
-      }
-
-      const wasShowingCreep = lastShown === creep;
-      creep = null;
-
-      if (!music && wasShowingCreep) {
-        creepTurn = false;
+    // The last gamer left — move off a stale creep immediately.
+    creepEnded() {
+      if (!music && lastName === 'creep') {
         startRotation();
       }
     },

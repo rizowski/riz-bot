@@ -15,11 +15,11 @@ discord.onReady(async (client) => {
     guild: guild.name,
   });
 
-  status.init(client);
-
   for (const presence of guild.presences.cache.values()) {
     status.handlePresence(presence);
   }
+
+  status.init(client);
 });
 
 discord.onPresenceUpdate((presence) => {
