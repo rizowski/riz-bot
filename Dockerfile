@@ -4,7 +4,7 @@ ENV STAGE prod
 ENV DOPPLER_TOKEN $DOPPLER_TOKEN
 
 RUN apk upgrade \
-  && apk add curl gpg
+  && apk add curl gpg ffmpeg yt-dlp
 
 RUN mkdir -p /app && chown -R node:node /app
 WORKDIR /app
