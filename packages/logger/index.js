@@ -1,8 +1,8 @@
-const pino = require('pino');
+import pino from 'pino';
 
 const { STAGE } = process.env;
 
-function createConfig() {
+export function createConfig(stage = STAGE) {
   const baseConfig = {
     name: 'riz-bot',
     messageKey: 'message',
@@ -10,17 +10,20 @@ function createConfig() {
     level: 'info',
   };
 
-  if (['local'].includes(STAGE)) {
+  if (stage === 'local') {
     return {
       ...baseConfig,
       level: 'trace',
-      prettyPrint: {
-        ignore: 'pid,hostname',
+      transport: {
+        target: 'pino-pretty',
+        options: {
+          ignore: 'pid,hostname',
+        },
       },
     };
   }
 
-  if (STAGE === 'test') {
+  if (stage === 'test') {
     return {
       ...baseConfig,
       level: 'silent',
@@ -32,4 +35,4 @@ function createConfig() {
 
 const logger = pino(createConfig());
 
-module.exports = logger;
+export default logger;
