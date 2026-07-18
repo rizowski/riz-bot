@@ -1,10 +1,9 @@
 {
-  "editor.defaultFormatter": "samverschueren.linter-xo",
+  "editor.defaultFormatter": "oxc.oxc-vscode",
   "[javascript]": {
-    "editor.formatOnSave": true,
-    // "editor.defaultFormatter": "samverschueren.linter-xo"
+    "editor.formatOnSave": true
   },
   "[shellscript]": {
     "editor.defaultFormatter": "foxundermoon.shell-format"
-  },
+  }
 }
